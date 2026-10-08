@@ -1,4 +1,4 @@
-import type { AICheck, AIIssue, AIValidationResult, CertificateTypeId, CheckKey, CheckStatus, DocumentStatus, MimeType, OcrField, RequirementId } from '../types';
+import type { AICheck, AIIssue, AIValidationResult, CertificateTypeId, CheckKey, CheckStatus, DocumentStatus, MimeType, OcrField, RequirementId, VerificationStage } from '../types';
 import { REQUIREMENTS } from '../config/certificateTypes';
 import { digits, fnv1a, mulberry32 } from '../utils/random';
 import { formatDate } from '../utils/format';
@@ -12,6 +12,26 @@ import { formatDate } from '../utils/format';
  * Production replacement: call an OCR/forensics service and map its output to AIValidationResult.
  */
 export const AI_ENGINE_ID = 'certitrack-precheck-sim-1.0';
+
+export type VerificationMode = 'prototype' | 'production';
+
+export const documentVerificationBackend: DocumentVerificationBackend = {
+  verify(input: AnalyzeInput): AIValidationResult {
+    return analyzeDocument(input);
+  },
+};
+
+export function runDocumentVerification(input: AnalyzeInput, mode: VerificationMode = 'prototype'): AIValidationResult {
+  if (mode === 'production') {
+    return {
+      ...documentVerificationBackend.verify(input),
+      engine: 'certitrack-production-adapter',
+      prototypeMode: false,
+      finalRecommendation: 'NEEDS MANUAL REVIEW',
+    };
+  }
+  return documentVerificationBackend.verify(input);
+}
 
 export const AI_CHECK_LABELS: Record<CheckKey, string> = {
   document_type: 'Document type',
@@ -75,6 +95,10 @@ export interface AnalyzeInput {
   /** Fingerprints of documents already on file, used for duplicate detection. */
   existingFingerprints: Array<{ fingerprint: string; applicationId: string; applicantName: string }>;
   runAt: string;
+}
+
+export interface DocumentVerificationBackend {
+  verify(input: AnalyzeInput): AIValidationResult;
 }
 
 export function fingerprintFile(fileName: string, fileSize: number): string {
@@ -183,6 +207,8 @@ export function analyzeDocument(input: AnalyzeInput): AIValidationResult {
   const isImage = input.mimeType !== 'application/pdf';
   const blurred = SIGNALS.blurred.test(fileName);
   const lowRes = isImage && input.fileSize < 25_000;
+  const fileValidity: 'valid' | 'invalid' = blurred || lowRes ? 'invalid' : 'valid';
+  const imageQualityScore = Math.max(18, Math.min(98, 100 - (blurred ? 45 : 0) - (lowRes ? 20 : 0) - (SIGNALS.cropped.test(fileName) ? 18 : 0)));
 
   const checks: AICheck[] = [];
   const add = (key: CheckKey, status: CheckStatus, detail: string) => checks.push({ key, label: AI_CHECK_LABELS[key], status, detail });
@@ -281,6 +307,37 @@ export function analyzeDocument(input: AnalyzeInput): AIValidationResult {
     recommendation: recommendationFor(c.key, c.status, expected.expectedType),
   }));
 
+  const fieldMatchingResult = checks.some((c) => c.key === 'name_match' && c.status === 'fail') || checks.some((c) => c.key === 'dob_match' && c.status === 'fail')
+    ? 'MISMATCH'
+    : checks.some((c) => c.key === 'name_match' && c.status === 'warn') || checks.some((c) => c.key === 'dob_match' && c.status === 'warn')
+      ? 'PARTIAL'
+      : 'MATCHED';
+
+  const consistencyResult = checks.some((c) => c.key === 'seal_date' && c.status === 'fail') || checks.some((c) => c.key === 'tampering' && c.status === 'fail')
+    ? 'INCONSISTENT'
+    : checks.some((c) => c.key === 'seal_date' && c.status === 'warn') || checks.some((c) => c.key === 'tampering' && c.status === 'warn')
+      ? 'REVIEW'
+      : 'CONSISTENT';
+
+  const forensicIndicators = [
+    ...(checks.some((c) => c.key === 'tampering' && c.status !== 'pass') ? ['Possible edit or overlay artefacts detected'] : ['No obvious editing artefacts detected']),
+    ...(checks.some((c) => c.key === 'duplicate' && c.status !== 'pass') ? ['Duplicate or reused file pattern flagged'] : ['No duplicate pattern detected'])
+  ];
+
+  const documentType = detected ? REQUIREMENTS[detected].expectedType : expected.expectedType;
+  const documentTypeConfidence = detected && detected === input.requirementId ? 0.94 : detected ? 0.46 : 0.78;
+  const ocrConfidence = Math.round(avgOcr * 1000) / 1000;
+  const overallAiVerificationConfidence = Math.round(confidence * 1000) / 1000;
+
+  let finalRecommendation: 'PASS' | 'NEEDS MANUAL REVIEW' | 'UPLOAD REJECTED';
+  if (fileValidity === 'invalid' || checks.some((c) => (c.key === 'document_type' || c.key === 'readability' || c.key === 'completeness') && c.status === 'fail')) {
+    finalRecommendation = 'UPLOAD REJECTED';
+  } else if (verdict === 'needs_changes' || warnings.length > 0) {
+    finalRecommendation = 'NEEDS MANUAL REVIEW';
+  } else {
+    finalRecommendation = 'PASS';
+  }
+
   let recommendedAction: string;
   if (verdict === 'needs_changes') {
     recommendedAction = `Ask the citizen to upload a corrected ${expected.expectedType.toLowerCase()}. Other documents are accepted.`;
@@ -289,6 +346,21 @@ export function analyzeDocument(input: AnalyzeInput): AIValidationResult {
   } else {
     recommendedAction = 'No action needed. Officer confirmation is still required before approval.';
   }
+
+  const pipeline = [
+    { stage: 'File Integrity Validation', status: fileValidity === 'valid' ? 'pass' : 'fail', detail: fileValidity === 'valid' ? 'Header and file container checks passed.' : 'File structure or integrity checks failed.' },
+    { stage: 'Image Quality Assessment', status: lowRes ? 'warn' : 'pass', detail: lowRes ? 'Image is low resolution and may be unreadable.' : 'Image quality is sufficient for review.' },
+    { stage: 'Document Boundary Detection', status: SIGNALS.cropped.test(fileName) ? 'fail' : 'pass', detail: SIGNALS.cropped.test(fileName) ? 'Document edges appear clipped or incomplete.' : 'Document boundaries are visible and complete.' },
+    { stage: 'Document Type Classification', status: detected && detected !== input.requirementId ? 'fail' : 'pass', detail: detected && detected !== input.requirementId ? `Detected ${REQUIREMENTS[detected].expectedType}, but ${expected.expectedType} was expected.` : `Classified as ${expected.expectedType}.` },
+    { stage: 'OCR', status: unreadable ? 'fail' : 'pass', detail: unreadable ? 'OCR could not extract reliable text from the scan.' : `OCR extracted ${ocr.length} fields.` },
+    { stage: 'Required Field Extraction', status: unreadable ? 'fail' : 'pass', detail: unreadable ? 'Critical fields were not extracted with confidence.' : 'Mandatory fields were extracted and reviewed.' },
+    { stage: 'Application-to-Document Field Matching', status: fieldMatchingResult === 'MISMATCH' ? 'fail' : fieldMatchingResult === 'PARTIAL' ? 'warn' : 'pass', detail: fieldMatchingResult === 'MISMATCH' ? 'Applicant data does not match the uploaded document.' : fieldMatchingResult === 'PARTIAL' ? 'Some values match; additional review is recommended.' : 'Applicant data matches the document fields.' },
+    { stage: 'Cross-Document Consistency Check', status: consistencyResult === 'INCONSISTENT' ? 'fail' : consistencyResult === 'REVIEW' ? 'warn' : 'pass', detail: consistencyResult === 'INCONSISTENT' ? 'Cross-document comparisons indicate inconsistency.' : consistencyResult === 'REVIEW' ? 'Cross-document comparison requires a manual check.' : 'Cross-document checks are consistent.' },
+    { stage: 'Duplicate Detection', status: checks.find((c) => c.key === 'duplicate')?.status ?? 'pass', detail: checks.find((c) => c.key === 'duplicate')?.detail ?? 'No duplicate pattern detected.' },
+    { stage: 'Basic Forensic / Tamper Indicator Detection', status: checks.find((c) => c.key === 'tampering')?.status ?? 'pass', detail: checks.find((c) => c.key === 'tampering')?.detail ?? 'No forensic anomalies detected.' },
+    { stage: 'Confidence Calculation', status: overallAiVerificationConfidence >= 0.75 ? 'pass' : overallAiVerificationConfidence >= 0.5 ? 'warn' : 'fail', detail: `AI Verification Confidence is ${overallAiVerificationConfidence.toFixed(3)}.` },
+    { stage: 'Final AI Verification Result', status: finalRecommendation === 'PASS' ? 'pass' : finalRecommendation === 'NEEDS MANUAL REVIEW' ? 'warn' : 'fail', detail: `Recommendation: ${finalRecommendation}.` },
+  ] as VerificationStage[];
 
   return {
     documentId: input.documentId,
@@ -299,6 +371,19 @@ export function analyzeDocument(input: AnalyzeInput): AIValidationResult {
     verdict,
     detectedType: detected ? REQUIREMENTS[detected].expectedType : expected.expectedType,
     expectedType: expected.expectedType,
+    fileValidity,
+    imageQualityScore: Math.round(imageQualityScore * 10) / 10,
+    documentType,
+    documentTypeConfidence: Math.round(documentTypeConfidence * 1000) / 1000,
+    ocrConfidence,
+    extractedFields: ocr,
+    fieldMatchingResult,
+    consistencyResult,
+    forensicIndicators,
+    overallAiVerificationConfidence,
+    finalRecommendation,
+    prototypeMode: true,
+    pipeline,
     ocr,
     checks,
     issues,

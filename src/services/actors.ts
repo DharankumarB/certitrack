@@ -1,11 +1,12 @@
 import type { ActorRef, User } from '../types';
+import { normalizeRole } from './access';
 
 export function actorOf(user: User): ActorRef {
   return {
     id: user.id,
     name: user.name,
-    role: user.role,
-    departmentId: user.role === 'officer' ? user.departmentId : null,
+    role: normalizeRole(user.role),
+    departmentId: user.role === 'department_staff' || user.role === 'officer' ? user.departmentId : null,
   };
 }
 

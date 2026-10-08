@@ -85,7 +85,7 @@ export function PublicLayout() {
             <ul className="space-y-1">
               <li><Link className="hover:text-white focus-visible:outline-2 focus-visible:outline-amber-300" to="/help">Help and FAQs</Link></li>
               <li><Link className="hover:text-white focus-visible:outline-2 focus-visible:outline-amber-300" to="/track">Track an application</Link></li>
-              <li><Link className="hover:text-white focus-visible:outline-2 focus-visible:outline-amber-300" to="/login">Try the demo accounts</Link></li>
+              <li><Link className="hover:text-white focus-visible:outline-2 focus-visible:outline-amber-300" to="/login">Choose a sign-in option</Link></li>
             </ul>
           </div>
         </div>

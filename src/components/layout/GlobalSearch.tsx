@@ -9,10 +9,11 @@ import { formatDate } from '../../utils/format';
 import { APPLICATION_STATUS_META } from '../../config/workflow';
 import { CERTIFICATE_TYPES } from '../../config/certificateTypes';
 import { cn } from '../../utils/cn';
+import { workspaceBaseFor } from '../../config/navigation';
 
 function applicationHref(user: User, id: string): string {
   if (user.role === 'citizen') return `/citizen/applications/${id}`;
-  if (user.role === 'officer') return `/officer/applications/${id}`;
+  if ('departmentId' in user) return `/staff/${user.departmentId}/applications/${id}`;
   return `/admin/applications?q=${encodeURIComponent(id)}`;
 }
 
@@ -26,6 +27,7 @@ export function GlobalSearch({ user, autoFocus = false, onSelect }: { user: User
   const rootRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const listId = useId();
+  const workspaceBase = workspaceBaseFor(user);
 
   useEffect(() => {
     let active = true;
@@ -82,7 +84,7 @@ export function GlobalSearch({ user, autoFocus = false, onSelect }: { user: User
           onKeyDown={(e) => {
             if (e.key === 'Escape') close();
             if (e.key === 'Enter' && shown) {
-              const first = shown.applications[0] ? applicationHref(user, shown.applications[0].id) : shown.certificates[0] ? `/${user.role}/locker` : null;
+              const first = shown.applications[0] ? applicationHref(user, shown.applications[0].id) : shown.certificates[0] ? `${workspaceBase}/processed` : null;
               if (first) {
                 navigate(first);
                 close();
@@ -119,7 +121,7 @@ export function GlobalSearch({ user, autoFocus = false, onSelect }: { user: User
               {shown.certificates.map((c) => (
                 <ResultLink
                   key={c.id}
-                  to={user.role === 'citizen' ? `/citizen/locker?cert=${c.id}` : `/${user.role}/processed?q=${encodeURIComponent(c.certificateNumber)}`}
+                  to={user.role === 'citizen' ? `/citizen/locker?cert=${c.id}` : `${workspaceBase}/processed?q=${encodeURIComponent(c.certificateNumber)}`}
                   onDone={close}
                   icon={ShieldCheck}
                   title={c.certificateNumber}
@@ -131,7 +133,7 @@ export function GlobalSearch({ user, autoFocus = false, onSelect }: { user: User
           {shown && shown.people.length > 0 && user.role !== 'citizen' && (
             <Group title="Applicant name">
               {shown.people.map((p) => (
-                <ResultLink key={p.id} to={`/${user.role}/applications?q=${encodeURIComponent(p.name)}`} onDone={close} icon={UserIcon} title={p.name} subtitle={`${p.detail} · ${p.applicationIds.length} application${p.applicationIds.length > 1 ? 's' : ''}`} />
+                <ResultLink key={p.id} to={`${workspaceBase}/applications?q=${encodeURIComponent(p.name)}`} onDone={close} icon={UserIcon} title={p.name} subtitle={`${p.detail} · ${p.applicationIds.length} application${p.applicationIds.length > 1 ? 's' : ''}`} />
               ))}
             </Group>
           )}

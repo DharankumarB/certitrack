@@ -5,11 +5,25 @@ import { approveApplication, requestChanges, rejectApplication, createApplicatio
 import { decideDocument } from '../services/documentService';
 import { runSimulation } from '../services/simulation';
 import { ServiceError } from '../services/api';
-import { DEMO_CITIZEN_ID, DEMO_OFFICER_ID } from '../data/mockUsers';
-import type { User } from '../types';
+import { SAMPLE_CITIZEN_ID } from '../data/mockUsers';
+import type { CitizenUser, OfficerUser } from '../types';
 
-const officer = (): User => appStore.getState().users.find((u) => u.id === DEMO_OFFICER_ID)! as User;
-const citizen = (): User => appStore.getState().users.find((u) => u.id === DEMO_CITIZEN_ID)! as User;
+const officer = (): OfficerUser => ({
+  id: 'test-caste-staff',
+  role: 'department_staff',
+  name: 'Test Staff',
+  email: 'staff@example.test',
+  mobile: '',
+  createdAt: new Date().toISOString(),
+  passwordDigest: '',
+  active: true,
+  accountStatus: 'approved',
+  lastLoginAt: null,
+  employeeId: 'CASTE-TEST',
+  departmentId: 'caste',
+  designation: 'Test Officer',
+});
+const citizen = (): CitizenUser => appStore.getState().users.find((u) => u.id === SAMPLE_CITIZEN_ID)! as CitizenUser;
 
 beforeAll(() => {
   appStore.replace(buildSeedData(Date.now()));
@@ -68,7 +82,7 @@ describe('officer decisions and live propagation', () => {
         dob: '1994-03-18',
         gender: 'Female',
         mobile: '9000000001',
-        email: 'citizen.demo@certitrack.example',
+        email: 'meera.krishnan@example.test',
         address: '14, Gandhi Street, Ward 7, near the Panchayat Office',
         district: 'Coimbatore',
         taluk: 'Pollachi',
@@ -87,7 +101,7 @@ describe('officer decisions and live propagation', () => {
     expect(created.id).toMatch(/^APP-\d+$/);
     expect(created.status).toBe('in_review');
     expect(created.timeline.map((e) => e.key)).toEqual(['submitted', 'ai_check', 'queued']);
-    expect(appStore.getState().notifications.some((n) => n.applicationId === created.id && n.recipientId === DEMO_CITIZEN_ID)).toBe(true);
+    expect(appStore.getState().notifications.some((n) => n.applicationId === created.id && n.recipientId === SAMPLE_CITIZEN_ID)).toBe(true);
   });
 
   it('refuses document decisions on a closed application', async () => {

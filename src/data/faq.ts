@@ -2,7 +2,7 @@ import type { UserRole } from '../types';
 
 export interface FaqItem {
   id: string;
-  category: 'Applying' | 'Tracking' | 'AI checks' | 'Decisions' | 'Certificates' | 'Notifications' | 'Privacy & demo';
+  category: 'Applying' | 'Tracking' | 'AI checks' | 'Decisions' | 'Certificates' | 'Notifications' | 'Privacy & prototype';
   question: string;
   answer: string;
 }
@@ -64,15 +64,15 @@ export const FAQ_ITEMS: FaqItem[] = [
   },
   {
     id: 'privacy',
-    category: 'Privacy & demo',
+    category: 'Privacy & prototype',
     question: 'Who can see my application?',
     answer: 'You see only your own applications. Department officers see only files from their own department, and every attempt to open another department’s file is blocked and audit-logged. Super Admins can see all records and the audit trail for oversight.',
   },
   {
     id: 'demo-data',
-    category: 'Privacy & demo',
+    category: 'Privacy & prototype',
     question: 'Is this real data?',
-    answer: 'No. CertiTrack is a prototype with fictional people, fictional documents and simulated AI, e-sign and courier services. Demo accounts use a shared demo password shown on the sign-in page. Use “Reset demo data” in Settings to restore the starting state.',
+    answer: 'No. CertiTrack is a prototype with fictional sample records and simulated AI, e-sign and courier services. Create a local citizen account or use an administrator-provisioned staff account to sign in. Resetting sample data preserves locally registered accounts.',
   },
 ];
 

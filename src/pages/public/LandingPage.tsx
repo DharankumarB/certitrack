@@ -69,11 +69,11 @@ export default function LandingPage() {
               <ButtonLink to="/track" size="lg" variant="onDark" icon={Route}>
                 Track an application
               </ButtonLink>
-              <ButtonLink to="/login#demo" size="lg" variant="ghost" className="text-white hover:bg-white/10">
-                Try the demo accounts
+              <ButtonLink to="/login" size="lg" variant="ghost" className="text-white hover:bg-white/10">
+                Sign in or create an account
               </ButtonLink>
             </div>
-            <p className="text-xs text-slate-300">Sign in with a demo account. No real credentials or personal data are used.</p>
+            <p className="text-xs text-slate-300">Local-development authentication only. Do not use real credentials or personal data.</p>
           </div>
           <div className="min-w-0 rounded-2xl border border-white/10 bg-white p-5 text-navy-900 shadow-2xl sm:p-6" aria-label="Example application journey">
             <div className="flex items-center justify-between gap-3">
@@ -272,12 +272,12 @@ export default function LandingPage() {
       <section aria-labelledby="cta-title" className="bg-navy-900 py-14 text-white">
         <div className="mx-auto flex max-w-5xl flex-col items-start gap-6 px-4 sm:px-6 md:flex-row md:items-center md:justify-between lg:px-8">
           <div className="space-y-2">
-            <h2 id="cta-title" className="text-2xl font-bold">Explore the full workflow with demo accounts</h2>
-            <p className="max-w-2xl text-sm text-slate-300">Citizen, officer and Super Admin workspaces are all live in this prototype. Items marked “Production integration required” are not connected.</p>
+            <h2 id="cta-title" className="text-2xl font-bold">Access CertiTrack workspaces</h2>
+            <p className="max-w-2xl text-sm text-slate-300">Create a citizen account or sign in to an approved staff or administrator account. This local prototype is not connected to production identity services.</p>
           </div>
           <div className="flex flex-wrap gap-3">
-            <ButtonLink to="/login#demo" size="lg" className="bg-amber-400 text-navy-950 hover:bg-amber-300" icon={Users}>Open demo accounts</ButtonLink>
-            <ButtonLink to="/help" size="lg" variant="onDark" icon={Smartphone}>Guided demo steps</ButtonLink>
+            <ButtonLink to="/signup" size="lg" className="bg-amber-400 text-navy-950 hover:bg-amber-300" icon={Users}>Create an account</ButtonLink>
+            <ButtonLink to="/login" size="lg" variant="onDark" icon={Smartphone}>Sign in</ButtonLink>
           </div>
         </div>
       </section>
@@ -302,4 +302,3 @@ function SectionHeading({ eyebrow, title, text, id }: { eyebrow: string; title: 
     </div>
   );
 }
-

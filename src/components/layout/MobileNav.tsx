@@ -1,6 +1,6 @@
 import { Link, useLocation } from 'react-router-dom';
 import { Menu } from 'lucide-react';
-import { MOBILE_PRIMARY, NAV } from '../../config/navigation';
+import { mobileNavigationFor } from '../../config/navigation';
 import type { User } from '../../types';
 import { NavIcon } from './NavIcon';
 import { cn } from '../../utils/cn';
@@ -8,7 +8,7 @@ import { cn } from '../../utils/cn';
 /** Bottom navigation for phones: four primary destinations plus a "More" button that opens the full menu. */
 export function MobileNav({ user, onMore, moreCount }: { user: User; onMore: () => void; moreCount: number }) {
   const location = useLocation();
-  const items = NAV[user.role].filter((item) => MOBILE_PRIMARY[user.role].includes(item.to));
+  const items = mobileNavigationFor(user);
   return (
     <nav aria-label="Primary mobile" className="fixed inset-x-0 bottom-0 z-30 border-t border-slate-200 bg-white/95 pb-[env(safe-area-inset-bottom)] backdrop-blur md:hidden">
       <ul className="grid grid-cols-5">

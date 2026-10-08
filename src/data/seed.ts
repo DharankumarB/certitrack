@@ -6,7 +6,7 @@ import { curatedNotifications } from './mockNotifications';
 import { curatedAuditLogs } from './mockAuditLogs';
 import { generateSynthetic } from './generator';
 
-export const DATA_SCHEMA_VERSION = 1;
+export const DATA_SCHEMA_VERSION = 3;
 
 /** Builds the complete, deterministic demo dataset anchored at `now`. */
 export function buildSeedData(now: number = Date.now()): AppData {
@@ -14,10 +14,10 @@ export function buildSeedData(now: number = Date.now()): AppData {
   const curated = curatedBundle(now);
   const curatedCitizenList = curatedCitizens(now);
   const curatedNumbers = new Set(curated.applications.map((a) => Number(a.id.replace('APP-', ''))));
-  const officers = staff.filter((u): u is OfficerUser => u.role === 'officer');
+  const officers = staff.filter((u): u is OfficerUser => 'employeeId' in u);
   const synthetic = generateSynthetic(now, curatedNumbers, officers);
 
-  const users = [...staff, ...curatedCitizenList, ...synthetic.citizens];
+  const users = [...curatedCitizenList, ...synthetic.citizens, ...staff.filter((user) => user.role === 'super_admin' || user.role === 'admin')];
   const applications = [...curated.applications, ...synthetic.applications].sort((a, b) => Date.parse(b.submittedAt) - Date.parse(a.submittedAt));
   const maxAppNumber = Math.max(...applications.map((a) => Number(a.id.replace('APP-', ''))));
   const notifications = curatedNotifications(now, users);

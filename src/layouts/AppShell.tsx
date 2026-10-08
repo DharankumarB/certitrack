@@ -12,7 +12,7 @@ import { useNavCounts } from '../components/layout/navBadges';
 import { Drawer } from '../components/ui/Modal';
 import { Avatar } from '../components/layout/Avatar';
 import { LoadingBlock } from '../components/ui/Feedback';
-import { NAV, ROLE_LABEL } from '../config/navigation';
+import { navigationFor, ROLE_LABEL } from '../config/navigation';
 import { cn } from '../utils/cn';
 import { useAppState } from '../hooks/useAppState';
 import { useNavigate } from 'react-router-dom';
@@ -35,9 +35,9 @@ export function AppShell() {
 
   const portalLabel = useMemo(() => {
     if (user.role === 'citizen') return 'Citizen portal';
-    if (user.role === 'admin') return 'Super Admin console';
-    const dept = departments.find((d) => d.id === user.departmentId);
-    return `${dept?.shortName ?? 'Department'} department · Officer console`;
+    if (user.role === 'super_admin' || user.role === 'admin') return 'Super Admin console';
+    const dept = 'departmentId' in user ? departments.find((d) => d.id === user.departmentId) : undefined;
+    return `${dept?.shortName ?? 'Department'} department · Department staff console`;
   }, [user, departments]);
 
   return (
@@ -65,7 +65,7 @@ export function AppShell() {
               <p className="truncate text-xs text-slate-300">{ROLE_LABEL[user.role]}</p>
             </div>
           </div>
-          <NavList items={NAV[user.role]} counts={counts} onNavigate={() => setDrawerOpen(false)} />
+          <NavList items={navigationFor(user)} counts={counts} onNavigate={() => setDrawerOpen(false)} />
           <button
             type="button"
             onClick={() => void signOut().then(() => navigate('/login', { replace: true }))}

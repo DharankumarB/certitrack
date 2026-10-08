@@ -1,5 +1,5 @@
 import type { Application, Certificate, Delivery, Department, Document, User } from '../types';
-import { DEMO_CITIZEN_ID, DEMO_OFFICER_ID } from './mockUsers';
+import { SAMPLE_CITIZEN_ID, SAMPLE_CASTE_STAFF_ID } from './mockUsers';
 import { mockDepartments } from './mockDepartments';
 import { ago, buildApplication, buildCertificate, buildDelivery, buildDocuments, buildTimeline, MIN, plus } from './factories';
 import type { DocSpec } from './factories';
@@ -32,9 +32,9 @@ const accepted = (spec: DocSpec): DocSpec => ({ ...spec, officerDecision: 'accep
 
 export function curatedBundle(now: number): CuratedBundle {
   const meera = {
-    id: DEMO_CITIZEN_ID,
+    id: SAMPLE_CITIZEN_ID,
     name: 'Meera Krishnan',
-    email: 'citizen.demo@certitrack.example',
+    email: 'meera.krishnan@sample.invalid',
     mobile: '9000000001',
     dob: '1994-03-18',
     gender: 'Female',
@@ -124,7 +124,7 @@ export function curatedBundle(now: number): CuratedBundle {
     ];
     const details = { community: 'Demo Community A', category: 'SC', fatherName: 'Murugesan Krishnan' };
     docs.push(...buildDocuments({ appId: 'APP-10203', certificateType: 'caste', submittedAt, applicantName: meera.name, applicantDob: meera.dob, applicantAddress: MEERA_ADDR, details, uploadedBy: meera.name, existingFingerprints: [] }, specs, 'doc-10203'));
-    apps.push(buildApplication({ id: 'APP-10203', certificateType: 'caste', departmentId: 'caste', citizen: meera, details, status: 'rejected', submittedAt, deptSlaDays: DEPT.caste!.slaDays, deliveryRequested: false, timeline, documents: docs.filter((d) => d.applicationId === 'APP-10203'), reviewStartedAt: sub(13, 2), reviewerId: DEMO_OFFICER_ID, officerRemark: null, rejectionReason: 'Caste evidence issued to a different applicant.', esignAt: null, completedAt: rejectedAt, certificateId: null }));
+    apps.push(buildApplication({ id: 'APP-10203', certificateType: 'caste', departmentId: 'caste', citizen: meera, details, status: 'rejected', submittedAt, deptSlaDays: DEPT.caste!.slaDays, deliveryRequested: false, timeline, documents: docs.filter((d) => d.applicationId === 'APP-10203'), reviewStartedAt: sub(13, 2), reviewerId: SAMPLE_CASTE_STAFF_ID, officerRemark: null, rejectionReason: 'Caste evidence issued to a different applicant.', esignAt: null, completedAt: rejectedAt, certificateId: null }));
   }
 
   // 4. APP-10294 · Caste · issued, courier in transit (live)
@@ -151,7 +151,7 @@ export function curatedBundle(now: number): CuratedBundle {
     docs.push(...buildDocuments({ appId: 'APP-10294', certificateType: 'caste', submittedAt, applicantName: meera.name, applicantDob: meera.dob, applicantAddress: MEERA_ADDR, details, uploadedBy: meera.name, existingFingerprints: [] }, specs, 'doc-10294'));
     certs.push(buildCertificate({ id: 'cert-10294', number: 309, year: 2026, type: 'caste', applicationId: 'APP-10294', citizen: meera, parentOrSpouseName: 'Murugesan Krishnan', details, issuedAt, deliveryRequested: true, taluk: meera.taluk }));
     deliveries.push(buildDelivery({ id: 'dlv-10294', number: 908172364, applicationId: 'APP-10294', certificateId: 'cert-10294', recipientName: meera.name, recipientAddress: MEERA_ADDR, location: 'Coimbatore Sorting Hub', dispatchedAt: sub(4, 1), status: 'in_transit', nextStepAt: new Date(now + 3 * MIN).toISOString(), inTransitAt: sub(2, 3) }));
-    apps.push(buildApplication({ id: 'APP-10294', certificateType: 'caste', departmentId: 'caste', citizen: meera, details, status: 'issued', submittedAt, deptSlaDays: DEPT.caste!.slaDays, deliveryRequested: true, timeline, documents: docs.filter((d) => d.applicationId === 'APP-10294'), reviewStartedAt: sub(5, 2), reviewerId: DEMO_OFFICER_ID, officerRemark: null, rejectionReason: null, esignAt: null, completedAt: issuedAt, certificateId: 'cert-10294' }));
+    apps.push(buildApplication({ id: 'APP-10294', certificateType: 'caste', departmentId: 'caste', citizen: meera, details, status: 'issued', submittedAt, deptSlaDays: DEPT.caste!.slaDays, deliveryRequested: true, timeline, documents: docs.filter((d) => d.applicationId === 'APP-10294'), reviewStartedAt: sub(5, 2), reviewerId: SAMPLE_CASTE_STAFF_ID, officerRemark: null, rejectionReason: null, esignAt: null, completedAt: issuedAt, certificateId: 'cert-10294' }));
   }
 
   // 5. APP-10311 · Income · in review with a warning (not yet picked up)
@@ -216,7 +216,7 @@ export function curatedBundle(now: number): CuratedBundle {
     const specs: DocSpec[] = [accepted(STD.identity()), accepted(STD.address()), accepted({ requirementId: 'caste_evidence', fileName: 'caste-evidence-father.pdf', fileSize: 301_000, mimeType: 'application/pdf' }), accepted(STD.photo())];
     const details = { community: 'Demo Community A', category: 'SC', fatherName: 'Murugesan Krishnan' };
     docs.push(...buildDocuments({ appId: 'APP-10347', certificateType: 'caste', submittedAt, applicantName: meera.name, applicantDob: meera.dob, applicantAddress: MEERA_ADDR, details, uploadedBy: meera.name, existingFingerprints: [] }, specs, 'doc-10347'));
-    apps.push(buildApplication({ id: 'APP-10347', certificateType: 'caste', departmentId: 'caste', citizen: meera, details, status: 'esign_pending', submittedAt, deptSlaDays: DEPT.caste!.slaDays, deliveryRequested: false, timeline, documents: docs.filter((d) => d.applicationId === 'APP-10347'), reviewStartedAt: sub(2, 1), reviewerId: DEMO_OFFICER_ID, officerRemark: null, rejectionReason: null, esignAt, completedAt: null, certificateId: null }));
+    apps.push(buildApplication({ id: 'APP-10347', certificateType: 'caste', departmentId: 'caste', citizen: meera, details, status: 'esign_pending', submittedAt, deptSlaDays: DEPT.caste!.slaDays, deliveryRequested: false, timeline, documents: docs.filter((d) => d.applicationId === 'APP-10347'), reviewStartedAt: sub(2, 1), reviewerId: SAMPLE_CASTE_STAFF_ID, officerRemark: null, rejectionReason: null, esignAt, completedAt: null, certificateId: null }));
   }
 
   // 8. APP-10388 · Caste · another citizen · AI flagged duplicate and edit indicators

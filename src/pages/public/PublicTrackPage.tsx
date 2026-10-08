@@ -55,7 +55,7 @@ export default function PublicTrackPage() {
                 Track application
               </Button>
             </form>
-            <p className="text-xs text-slate-500">Demo: use APP-10294 with mobile digits 0001, or any Application ID from the demo accounts.</p>
+            <p className="text-xs text-slate-500">Enter your application reference and the mobile number used when submitting it.</p>
           </CardBody>
         </Card>
 

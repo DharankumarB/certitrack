@@ -1,14 +1,13 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
-import type { User, UserRole } from '../types';
+import type { User } from '../types';
 import { useAppState } from '../hooks/useAppState';
-import { getCurrentUser, loginAsDemo, login, logout, type LoginInput } from '../services/authService';
+import { getCurrentUser, login, logout, type LoginInput } from '../services/authService';
 import { readSession } from '../services/session';
 import { useToast } from './ToastContext';
 
 interface AuthApi {
   user: User | null;
   signIn: (input: LoginInput) => Promise<User>;
-  signInDemo: (role: UserRole, remember?: boolean) => Promise<User>;
   signOut: () => Promise<void>;
   refreshSession: () => void;
 }
@@ -31,7 +30,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (hadSession && !user) {
-      toast({ tone: 'warning', title: 'Your session has ended', description: 'The account no longer exists in this demo dataset. Sign in again.' });
+      toast({ tone: 'warning', title: 'Your session has ended', description: 'This account is no longer active. Sign in again.' });
     }
   }, [hadSession, user, toast]);
 
@@ -46,21 +45,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     [refreshSession],
   );
 
-  const signInDemo = useCallback(
-    async (role: UserRole, remember = false) => {
-      const signedIn = await loginAsDemo(role, remember);
-      refreshSession();
-      return signedIn;
-    },
-    [refreshSession],
-  );
-
   const signOut = useCallback(async () => {
     await logout(user);
     refreshSession();
   }, [user, refreshSession]);
 
-  const api = useMemo<AuthApi>(() => ({ user, signIn, signInDemo, signOut, refreshSession }), [user, signIn, signInDemo, signOut, refreshSession]);
+  const api = useMemo<AuthApi>(() => ({ user, signIn, signOut, refreshSession }), [user, signIn, signOut, refreshSession]);
   return <AuthContext.Provider value={api}>{children}</AuthContext.Provider>;
 }
 
