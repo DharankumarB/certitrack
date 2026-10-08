@@ -8,7 +8,7 @@ import { formatDate } from '../utils/format';
  *
  * This is a deterministic, rule-based simulation of the nine pre-checks a production OCR and
  * forensics service would run. It does NOT read pixels or perform real OCR. Results are
- * "decision support" only: the authorised department officer makes the final decision.
+ * "decision support" only: the authorized department officer makes the final decision.
  * Production replacement: call an OCR/forensics service and map its output to AIValidationResult.
  */
 export const AI_ENGINE_ID = 'certitrack-precheck-sim-1.0';

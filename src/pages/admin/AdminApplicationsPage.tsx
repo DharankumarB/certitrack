@@ -93,7 +93,7 @@ export default function AdminApplicationsPage() {
         id="admin-apps-title"
       />
       <Card className="p-4 sm:p-5">
-        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
+        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5 grid-cols-1">
           <TextField label="Search" type="search" value={q} onChange={(e) => setParam('q', e.target.value)} placeholder="ID, applicant or certificate" autoComplete="off" wrapperClassName="xl:col-span-2" />
           <SelectField label="Department" value={dept} onChange={(e) => setParam('dept', e.target.value)} options={[{ value: 'all', label: 'All departments' }, ...departments.map((d) => ({ value: d.id, label: d.name }))]} />
           <SelectField label="Certificate" value={type} onChange={(e) => setParam('type', e.target.value)} options={[{ value: 'all', label: 'All certificates' }, ...CERTIFICATE_TYPE_LIST.map((c) => ({ value: c.id, label: c.label }))]} />

@@ -16,7 +16,7 @@ export function DeliveryTimeline({ delivery }: { delivery: Delivery }) {
   return (
     <div className="space-y-6">
       <div className="flex flex-wrap items-start justify-between gap-4">
-        <dl className="grid gap-x-8 gap-y-3 text-sm sm:grid-cols-2">
+        <dl className="grid gap-x-8 gap-y-3 text-sm sm:grid-cols-2 grid-cols-1">
           <div>
             <dt className="text-xs uppercase tracking-wide text-slate-500">Tracking ID</dt>
             <dd className="font-mono font-semibold text-navy-900">{delivery.trackingId}</dd>
@@ -48,7 +48,7 @@ export function DeliveryTimeline({ delivery }: { delivery: Delivery }) {
           <IntegrationBadge kind="simulated" />
         </div>
       </div>
-      <ol className="grid gap-4 sm:grid-cols-4" aria-label="Delivery progress">
+      <ol className="grid gap-4 sm:grid-cols-4 grid-cols-1" aria-label="Delivery progress">
         {DELIVERY_STEPS.map((step, index) => {
           const done = index < currentIndex || delivery.status === 'delivered';
           const current = index === currentIndex && delivery.status !== 'delivered';

@@ -55,7 +55,7 @@ export default function SignupPage() {
         <CardBody className="p-6 sm:p-8">
           {formError && <Alert tone="danger" className="mb-6">{formError}</Alert>}
           <form onSubmit={submit} noValidate className="space-y-8">
-            <fieldset className="grid gap-5 sm:grid-cols-2">
+            <fieldset className="grid gap-5 sm:grid-cols-2 grid-cols-1">
               <legend className="mb-4 text-base font-semibold text-navy-900">Your details</legend>
               <TextField label="Full name (as on your ID)" value={form.name} onChange={(e) => set('name', e.target.value)} error={errors.name} required autoComplete="name" wrapperClassName="sm:col-span-2" />
               <TextField label="Date of birth" type="date" value={form.dob} onChange={(e) => set('dob', e.target.value)} error={errors.dob} required autoComplete="bday" />
@@ -63,14 +63,14 @@ export default function SignupPage() {
               <TextField label="Mobile number" inputMode="tel" autoComplete="tel" value={form.mobile} onChange={(e) => set('mobile', e.target.value)} error={errors.mobile} required hint="10 digits, starts with 6 to 9" />
               <TextField label="Email" type="email" autoComplete="email" value={form.email} onChange={(e) => set('email', e.target.value)} error={errors.email} required />
             </fieldset>
-            <fieldset className="grid gap-5 sm:grid-cols-2">
+            <fieldset className="grid gap-5 sm:grid-cols-2 grid-cols-1">
               <legend className="mb-4 text-base font-semibold text-navy-900">Address</legend>
               <TextField label="House, street and locality" value={form.address} onChange={(e) => set('address', e.target.value)} error={errors.address} required wrapperClassName="sm:col-span-2" autoComplete="street-address" />
               <SelectField label="District" value={form.district} onChange={(e) => setForm((f) => ({ ...f, district: e.target.value, taluk: '' }))} error={errors.district} required placeholder="Select district" options={DISTRICTS.map((d) => ({ value: d, label: d }))} />
               <SelectField label="Taluk" value={form.taluk} onChange={(e) => set('taluk', e.target.value)} error={errors.taluk} required placeholder={form.district ? 'Select taluk' : 'Choose a district first'} disabled={!form.district} options={(DISTRICT_TALUKS[form.district] ?? []).map((t) => ({ value: t, label: t }))} />
               <TextField label="Village or town" value={form.village} onChange={(e) => set('village', e.target.value)} error={errors.village} required />
             </fieldset>
-            <fieldset className="grid gap-5 sm:grid-cols-2">
+            <fieldset className="grid gap-5 sm:grid-cols-2 grid-cols-1">
               <legend className="mb-4 text-base font-semibold text-navy-900">Password</legend>
               <TextField label="Password" type="password" autoComplete="new-password" value={form.password} onChange={(e) => set('password', e.target.value)} error={errors.password} required hint="At least 8 characters with a letter and a number" />
               <TextField label="Confirm password" type="password" autoComplete="new-password" value={form.confirmPassword} onChange={(e) => set('confirmPassword', e.target.value)} error={errors.confirmPassword} required />

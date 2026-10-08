@@ -49,7 +49,7 @@ export default function OfficerDashboardPage() {
       {loading && <LoadingBlock variant="cards" label="Loading your queue" />}
       {data && (
         <>
-          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
+          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5 grid-cols-1">
             <StatCard label="Pending" value={data.pending} icon={Clock} hint="Not yet opened" to="/officer/applications?status=in_review" />
             <StatCard label="Under review" value={data.underReview} icon={Eye} tone="sky" hint="Opened by an officer" />
             <StatCard label="Requires changes" value={data.changes} icon={TriangleAlert} tone="amber" to="/officer/applications?status=changes_requested" />
@@ -57,7 +57,7 @@ export default function OfficerDashboardPage() {
             <StatCard label="Avg processing time" value={formatDays(data.avgDays)} icon={FileClock} tone="violet" hint="Closed files (demo)" />
           </div>
 
-          <div className="grid gap-6 xl:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]">
+          <div className="grid gap-6 xl:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)] grid-cols-1">
             <section aria-labelledby="queue-title" className="min-w-0 space-y-4">
               <div className="flex items-center justify-between gap-3">
                 <h2 id="queue-title" className="text-lg font-semibold text-navy-900">Next in queue</h2>

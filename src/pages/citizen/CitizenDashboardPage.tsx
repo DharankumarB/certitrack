@@ -42,14 +42,14 @@ export default function CitizenDashboardPage() {
               A document was flagged. Upload the corrected file and your application returns to the officer queue automatically.
             </Alert>
           )}
-          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4 grid-cols-1">
             <StatCard label="Active applications" value={data.activeCount} icon={FolderOpen} to="/citizen/applications" hint="Open or in progress" />
             <StatCard label="Needs your action" value={data.changesCount} icon={TriangleAlert} tone="amber" to="/citizen/applications?status=changes_requested" hint="Documents to correct" />
             <StatCard label="Certificates in locker" value={data.certificateCount} icon={Lock} tone="green" to="/citizen/locker" hint="View, download, share" />
             <StatCard label="Unread notifications" value={unread} icon={Bell} tone="sky" to="/citizen/notifications" hint="In-app updates" />
           </div>
 
-          <div className="grid gap-6 xl:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)]">
+          <div className="grid gap-6 xl:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)] grid-cols-1">
             <Card className="min-w-0">
               <CardHeader title="Live status" description="Your most recent active application." actions={latest && <Badge tone="success">Live</Badge>} />
               <CardBody>
@@ -62,7 +62,7 @@ export default function CitizenDashboardPage() {
             </Card>
             <Card className="min-w-0">
               <CardHeader title="Quick actions" />
-              <CardBody className="grid gap-3">
+              <CardBody className="grid gap-3 grid-cols-1">
                 <ButtonLink to="/citizen/apply" icon={FilePlus2} variant="secondary" className="justify-start">Apply for a certificate</ButtonLink>
                 <ButtonLink to="/citizen/track" icon={Route} variant="secondary" className="justify-start">Track an application</ButtonLink>
                 <ButtonLink to="/citizen/locker" icon={ShieldCheck} variant="secondary" className="justify-start">Open Certificate Locker</ButtonLink>

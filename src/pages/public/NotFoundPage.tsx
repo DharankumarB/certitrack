@@ -10,6 +10,7 @@ export default function NotFoundPage() {
   const { user } = useAuth();
   return (
     <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6">
+      <h1 className="sr-only">Page not found</h1>
       <EmptyState
         icon={FileQuestion}
         title="We could not find that page"

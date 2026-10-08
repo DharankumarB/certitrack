@@ -68,7 +68,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="mx-auto grid max-w-6xl gap-8 px-4 py-10 sm:px-6 md:py-14 lg:grid-cols-[1fr_1.05fr] lg:gap-12 lg:px-8">
+    <div className="mx-auto grid max-w-6xl gap-8 px-4 py-10 sm:px-6 md:py-14 lg:grid-cols-[1fr_1.05fr] lg:gap-12 lg:px-8 grid-cols-1">
       <Card className="self-start">
         <CardBody className="space-y-6 p-6 sm:p-8">
           <div>
@@ -126,7 +126,7 @@ export default function LoginPage() {
         <p className="text-sm text-slate-600">
           One click opens each role’s workspace with fictional data. For manual sign-in use the password <code className="rounded bg-slate-100 px-1.5 py-0.5 font-mono text-xs text-slate-900">{DEMO_PASSWORD}</code>. This is a shared demo password, not a real credential.
         </p>
-        <div className="grid gap-4">
+        <div className="grid gap-4 grid-cols-1">
           {DEMO_ACCOUNTS.map((acc) => {
             const Icon = ICONS[acc.role];
             return (

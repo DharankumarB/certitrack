@@ -9,6 +9,8 @@ import { useDebouncedValue } from '../../hooks/useDebouncedValue';
 import { usePageTitle } from '../../hooks/usePageTitle';
 import { listApplications } from '../../services/applicationService';
 import { PageHeader } from '../../components/layout/PageHeader';
+import { CERTIFICATE_TYPE_LIST } from '../../config/certificateTypes';
+import { departmentOf } from '../../services/access';
 import { Button } from '../../components/ui/Button';
 import { Card } from '../../components/ui/Card';
 import { SelectField, TextField } from '../../components/ui/Forms';
@@ -80,8 +82,9 @@ export default function OfficerQueuePage() {
         id="queue-title"
       />
       <Card className="p-4 sm:p-5">
-        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-6">
+        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-6 grid-cols-1">
           <TextField label="Search" type="search" placeholder="ID or applicant" value={q} onChange={(e) => setParam('q', e.target.value)} wrapperClassName="xl:col-span-2" autoComplete="off" />
+          <SelectField label="Certificate" value={type} onChange={(e) => setParam('type', e.target.value)} options={[{ value: 'all', label: 'All certificates' }, ...CERTIFICATE_TYPE_LIST.filter((c) => c.departmentId === departmentOf(officer)).map((c) => ({ value: c.id, label: c.label }))]} />
           <SelectField label="Status" value={status} onChange={(e) => setParam('status', e.target.value)} options={[{ value: 'all', label: 'All statuses' }, { value: 'in_review', label: 'Under review' }, { value: 'changes_requested', label: 'Needs changes' }, { value: 'esign_pending', label: 'Approved · e-sign' }, { value: 'issued', label: 'Issued' }, { value: 'rejected', label: 'Rejected' }]} />
           <SelectField label="Date submitted" value={date} onChange={(e) => setParam('date', e.target.value)} options={[{ value: 'all', label: 'Any time' }, { value: 'today', label: 'Today' }, { value: '7d', label: 'Last 7 days' }, { value: '30d', label: 'Last 30 days' }]} />
           <SelectField label="AI result" value={ai} onChange={(e) => setParam('ai', e.target.value)} options={Object.entries(AI_FILTER_LABELS).map(([value, label]) => ({ value, label }))} />

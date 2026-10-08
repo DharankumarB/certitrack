@@ -88,7 +88,7 @@ export default function DepartmentDetailPage() {
         actions={<IntegrationBadge kind="demo-data" />}
         id="dept-title"
       />
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-6">
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-6 grid-cols-1">
         <Kpi label="Total" value={data.metrics.total} />
         <Kpi label="Pending" value={data.metrics.pending} />
         <Kpi label="Needs changes" value={data.metrics.changes} />
@@ -97,7 +97,7 @@ export default function DepartmentDetailPage() {
         <Kpi label="Avg processing" value={formatDays(data.metrics.avgHours === null ? null : data.metrics.avgHours / 24)} />
       </div>
 
-      <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
+      <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] grid-cols-1">
         <Card>
           <CardHeader title="Officers" description={`Head: ${data.department.headName}. Disabling access blocks sign-in for that officer.`} />
           <CardBody className="space-y-3">
@@ -130,7 +130,7 @@ export default function DepartmentDetailPage() {
         </Card>
       </div>
 
-      <div className="grid gap-6 xl:grid-cols-2">
+      <div className="grid gap-6 xl:grid-cols-2 grid-cols-1">
         <ChartCard title="Bottleneck stages" description="Average hours in each stage" valueLabel="Average hours" data={bottlenecks}>
           <BarsChart horizontal data={bottlenecks} valueLabel="Average hours" unit=" h" />
         </ChartCard>

@@ -157,7 +157,7 @@ export function AIPanel({ ai, compact = false }: { ai: AIValidationResult | null
           </h3>
           <Badge tone="info">Decision support only</Badge>
         </div>
-        <div className="mt-3 grid gap-3 sm:grid-cols-[1fr_auto] sm:items-center">
+        <div className="mt-3 grid gap-3 sm:grid-cols-[1fr_auto] sm:items-center grid-cols-1">
           <div>
             <p className="text-xs text-slate-600">Confidence</p>
             <div className="mt-1 flex items-center gap-3">
@@ -234,7 +234,7 @@ export function AIPanel({ ai, compact = false }: { ai: AIValidationResult | null
       )}
       <p className="flex items-start gap-2 text-xs text-slate-600">
         <Info className="mt-0.5 size-3.5 shrink-0" aria-hidden="true" />
-        AI provides decision support only. The authorised department officer makes the final decision.
+        AI provides decision support only. The authorized department officer makes the final decision.
       </p>
     </section>
   );

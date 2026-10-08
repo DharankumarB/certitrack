@@ -81,7 +81,7 @@ export default function AIVerificationPage() {
         ]}
       />
       {visible.length === 0 && <EmptyState icon={ScanSearch} title="Nothing in this filter" description="Documents in open files will appear here with their AI findings." />}
-      <div className="grid gap-5 xl:grid-cols-2">
+      <div className="grid gap-5 xl:grid-cols-2 grid-cols-1">
         {visible.map((d) => {
           const app = applications.find((a) => a.id === d.applicationId);
           return (

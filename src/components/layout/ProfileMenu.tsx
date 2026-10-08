@@ -25,7 +25,7 @@ export function ProfileMenu({ user, basePath }: { user: User; basePath: string }
           className="flex items-center gap-2 rounded-lg p-1 pr-2 hover:bg-slate-100 focus-visible:outline-2 focus-visible:outline-navy-500"
         >
           <Avatar name={user.name} size="sm" />
-          <span className="hidden min-w-0 text-left md:block">
+          <span className="hidden min-w-0 text-left lg:block">
             <span className="block max-w-[10rem] truncate text-sm font-semibold text-navy-900">{user.name}</span>
             <span className="block text-xs text-slate-500">{subtitle}</span>
           </span>

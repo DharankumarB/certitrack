@@ -21,7 +21,7 @@ export default function DepartmentsPage() {
       {error !== undefined && <ErrorState error={error} onRetry={reload} />}
       {loading && <LoadingBlock variant="cards" label="Loading departments" />}
       {data && (
-        <ul className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+        <ul className="grid gap-5 md:grid-cols-2 xl:grid-cols-3 grid-cols-1">
           {data.map((d) => (
             <li key={d.department.id}>
               <Card className="flex h-full flex-col">

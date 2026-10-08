@@ -25,8 +25,11 @@ const SIZES: Record<ButtonSize, string> = {
 };
 
 export function buttonClasses(variant: ButtonVariant = 'primary', size: ButtonSize = 'md', fullWidth?: boolean, className?: string): string {
+  // Callers that hide a button with `hidden` and reveal it with `md:inline-flex` must not also get the base display class.
+  const display = className?.split(/\s+/).includes('hidden') ? '' : 'inline-flex';
   return cn(
-    'inline-flex items-center justify-center rounded-lg font-semibold whitespace-nowrap transition-colors duration-150 disabled:cursor-not-allowed disabled:opacity-55',
+    display,
+    'items-center justify-center rounded-lg font-semibold whitespace-nowrap transition-colors duration-150 disabled:cursor-not-allowed disabled:opacity-55',
     'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-navy-500',
     VARIANTS[variant],
     SIZES[size],

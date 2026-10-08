@@ -47,7 +47,7 @@ export function CertificateDocument({ cert }: { cert: Certificate }) {
           <h3 className="font-serif text-xl font-bold text-navy-900 sm:text-2xl">{def.label.toUpperCase()}</h3>
           <p className="text-xs text-slate-600">{cert.authority}</p>
         </div>
-        <div className="mt-5 grid gap-x-8 gap-y-4 text-sm sm:grid-cols-2">
+        <div className="mt-5 grid gap-x-8 gap-y-4 text-sm sm:grid-cols-2 grid-cols-1">
           <Field label="Certificate number" value={cert.certificateNumber} mono />
           <Field label="Applicant name" value={cert.applicantName} />
           <Field label="Date of birth" value={formatDate(`${cert.applicantDob}T00:00:00`)} />
@@ -260,7 +260,7 @@ export function VerificationOutcome({ result }: { result: VerificationResult }) 
         {valid ? <ShieldCheck className="size-5" aria-hidden="true" /> : <ShieldX className="size-5" aria-hidden="true" />}
         {valid ? 'Found in the prototype registry: status active' : 'Found: this certificate is revoked'}
       </p>
-      <dl className="mt-3 grid gap-2 text-sm sm:grid-cols-2">
+      <dl className="mt-3 grid gap-2 text-sm sm:grid-cols-2 grid-cols-1">
         <div>
           <dt className="text-xs text-slate-600">Certificate</dt>
           <dd className="font-mono text-xs font-semibold text-slate-900">{result.certificateNumber}</dd>

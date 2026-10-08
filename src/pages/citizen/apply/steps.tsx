@@ -31,7 +31,7 @@ export function StepCertificate({ value, onChange, error }: { value: Certificate
       </div>
       <fieldset>
         <legend className="sr-only">Certificate type</legend>
-        <div className="grid gap-4 md:grid-cols-3">
+        <div className="grid gap-4 md:grid-cols-3 grid-cols-1">
           {CERTIFICATE_TYPE_LIST.map((c) => {
             const selected = value === c.id;
             return (
@@ -77,7 +77,7 @@ export function StepPersonal({ value, onChange, errors, user }: { value: Persona
         </div>
         <IntegrationBadge kind="simulated" />
       </div>
-      <div className="grid gap-5 sm:grid-cols-2">
+      <div className="grid gap-5 sm:grid-cols-2 grid-cols-1">
         <TextField label="Full name (as on your ID)" value={value.name} onChange={(e) => set('name', e.target.value)} error={errors.name} required autoComplete="name" />
         <TextField label="Date of birth" type="date" value={value.dob} onChange={(e) => set('dob', e.target.value)} error={errors.dob} required />
         <SelectField label="Gender" value={value.gender} onChange={(e) => set('gender', e.target.value)} error={errors.gender} required placeholder="Select" options={GENDER_OPTIONS.map((g) => ({ value: g, label: g }))} />
@@ -104,7 +104,7 @@ export function StepDetails({ type, value, onChange, errors }: { type: Certifica
         </h2>
         <p className="text-sm text-slate-600">These fields are specific to the {def.label.toLowerCase()}.</p>
       </div>
-      <div className="grid gap-5 sm:grid-cols-2">
+      <div className="grid gap-5 sm:grid-cols-2 grid-cols-1">
         {def.fields.map((f) => {
           const common = { label: f.label, value: value[f.key] ?? '', error: errors[f.key], required: f.required, hint: f.hint, id: `field-${f.key}`, onChange: (e: { target: { value: string } }) => set(f.key, e.target.value) };
           if (f.type === 'select') return <SelectField key={f.key} {...common} placeholder="Select" options={(f.options ?? []).map((o) => ({ value: o, label: o }))} />;
@@ -134,7 +134,7 @@ export function StepDocuments({ draft, user, setDraft, focusRequirement, errors,
           {uploaded} of {reqs.length} uploaded
         </Badge>
       </div>
-      <div className="grid gap-5 md:grid-cols-2">
+      <div className="grid gap-5 md:grid-cols-2 grid-cols-1">
         {reqs.map((r) => {
           return (
             <Card key={r} className={cn(focusRequirement === r && 'ring-4 ring-amber-200')} id={`slot-${r}`}>
@@ -250,7 +250,7 @@ export function StepAI({ draft, running, progress, onRun, onFix, onUploadAgain, 
           </Card>
         ))}
       </div>
-      <p className="text-xs text-slate-500">Checked as {user.name}. The final decision is made by the authorised department officer.</p>
+      <p className="text-xs text-slate-500">Checked for {user.name}. Final decision is made by the authorized department officer.</p>
     </section>
   );
 }

@@ -36,7 +36,7 @@ export const FAQ_ITEMS: FaqItem[] = [
     id: 'ai-role',
     category: 'AI checks',
     question: 'What does the AI do, and what does it not do?',
-    answer: 'The AI performs AI-assisted pre-verification: it checks document type, readability, OCR, name and date matching, completeness, duplicates and edit indicators. It never approves or rejects an application. The final decision is made by the authorised department officer.',
+    answer: 'The AI performs AI-assisted pre-verification: it checks document type, readability, OCR, name and date matching, completeness, duplicates and edit indicators. It never approves or rejects an application. The final decision is made by the authorized department officer.',
   },
   {
     id: 'who-decides',

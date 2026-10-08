@@ -32,7 +32,7 @@ export default function SystemActivityPage() {
         <>
           {!data.storage.persistent && <Alert tone="warning" title="Changes are kept in this tab only">{data.storage.notice ?? 'Browser storage is unavailable.'}</Alert>}
           {data.storage.notice && data.storage.persistent && <Alert tone="info">{data.storage.notice}</Alert>}
-          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
+          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5 grid-cols-1">
             <StatCard label="Applications" value={data.counts.applications} icon={Database} hint="In the local dataset" />
             <StatCard label="Documents" value={data.counts.documents} icon={Server} tone="sky" />
             <StatCard label="Certificates" value={data.counts.certificates} icon={ShieldCheck} tone="green" />
@@ -40,7 +40,7 @@ export default function SystemActivityPage() {
             <StatCard label="Courier in progress" value={data.deliveriesInProgress.length} icon={Truck} tone="violet" />
           </div>
 
-          <div className="grid gap-6 xl:grid-cols-2">
+          <div className="grid gap-6 xl:grid-cols-2 grid-cols-1">
             <Card>
               <CardHeader title="Simulated services" description="Behaviour the prototype runs in the browser." />
               <CardBody>
@@ -69,7 +69,7 @@ export default function SystemActivityPage() {
           <Card>
             <CardHeader title="AI check catalogue" description="The nine checks that run on every uploaded document." />
             <CardBody>
-              <ul className="grid gap-2 sm:grid-cols-3">
+              <ul className="grid gap-2 sm:grid-cols-3 grid-cols-1">
                 {AI_CHECK_ORDER.map((k) => (
                   <li key={k} className="rounded-lg bg-slate-50 px-3 py-2 text-sm font-medium text-slate-800">{AI_CHECK_LABELS[k]}</li>
                 ))}

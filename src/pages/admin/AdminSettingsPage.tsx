@@ -72,7 +72,7 @@ export default function AdminSettingsPage() {
   return (
     <div className="space-y-6">
       <PageHeader title="Settings" description="Simulation speed, notification channels, integration status and demo controls." id="settings-title" actions={<IntegrationBadge kind="prototype" />} />
-      <div className="grid gap-6 xl:grid-cols-2">
+      <div className="grid gap-6 xl:grid-cols-2 grid-cols-1">
         <Card>
           <CardHeader title="Simulation" description="How fast the simulated e-sign and courier progress." />
           <CardBody className="space-y-5">

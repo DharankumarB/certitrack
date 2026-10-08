@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { Eye, Route, Wrench, Upload, Truck, Lock, FileText, Info } from 'lucide-react';
 import { useCurrentUser } from '../../context/AuthContext';
@@ -40,7 +40,8 @@ export default function CitizenApplicationDetailPage() {
   const docs = useQuery(() => listDocuments(user, id), [id, user.id]);
   const delivery = useQuery<Delivery | null>(() => getDeliveryForApplication(user, id), [id, user.id]);
   const dept = useAppState((s) => s.departments);
-  const notifications = useAppState((s) => s.notifications.filter((n) => n.applicationId === id && n.recipientId === user.id).slice(0, 6));
+  const allNotifications = useAppState((s) => s.notifications);
+  const notifications = useMemo(() => allNotifications.filter((n) => n.applicationId === id && n.recipientId === user.id).slice(0, 6), [allNotifications, id, user.id]);
   const [previewDoc, setPreviewDoc] = useState<string | null>(null);
   const [replacing, setReplacing] = useState<{ docId: string; slot: UploadSlot | null } | null>(null);
   const [replaceState, setReplaceState] = useState<{ busy: boolean; label: string; index: number }>({ busy: false, label: '', index: 0 });
@@ -138,7 +139,7 @@ export default function CitizenApplicationDetailPage() {
         </Alert>
       )}
 
-      <div className="grid gap-6 xl:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]">
+      <div className="grid gap-6 xl:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)] grid-cols-1">
         <div className="min-w-0 space-y-6">
           <Card>
             <CardHeader title="Timeline" description="Each stage with its timestamp, department, action and description. Select Details on a stage for the full record." />
@@ -243,7 +244,7 @@ export default function CitizenApplicationDetailPage() {
             <CardBody className="space-y-3">
               <SecurityNote>Only you and the {deptName.replace(' Department', '')} officers can see this file. Every view is recorded.</SecurityNote>
               <p className="flex items-start gap-2 text-xs text-slate-600">
-                <Info className="mt-0.5 size-3.5 shrink-0" aria-hidden="true" /> AI results are advisory. The authorised officer makes the final decision.
+                <Info className="mt-0.5 size-3.5 shrink-0" aria-hidden="true" /> AI results are advisory. The authorized officer makes the final decision.
               </p>
               <div className="flex flex-wrap gap-2 text-xs text-slate-600">
                 <Truck className="size-3.5" aria-hidden="true" /> <span>{delivery.data ? `Tracking ${delivery.data.trackingId}` : 'No courier shipment yet.'}</span>

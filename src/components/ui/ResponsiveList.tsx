@@ -66,7 +66,7 @@ export function ResponsiveList<T>({ rows, columns, rowKey, card, caption, pageSi
 
   return (
     <div className={cn('w-full', className)}>
-      <div className="w-full overflow-x-auto rounded-xl border border-slate-200 bg-white shadow-sm">
+      <div className="relative w-full overflow-x-auto rounded-xl border border-slate-200 bg-white shadow-sm">
         <table className={cn('w-full border-collapse text-left text-sm', tableMinWidth)}>
           <caption className="sr-only">{caption}</caption>
           <thead className="bg-slate-50 text-xs uppercase tracking-wide text-slate-600">

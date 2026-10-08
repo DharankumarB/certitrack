@@ -27,7 +27,7 @@ export default function ProfilePage() {
   return (
     <div className="space-y-6">
       <PageHeader title="Profile and settings" description="Your contact details, notification choices and password." id="profile-title" />
-      <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_22rem]">
+      <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_22rem] grid-cols-1">
         <div className="min-w-0 space-y-6">
           <ProfileForm key={user.id} user={user} />
           <PasswordForm user={user} />
@@ -83,7 +83,7 @@ function ProfileForm({ user }: { user: User }) {
       <CardBody>
         {formError && <Alert tone="danger" className="mb-5">{formError}</Alert>}
         <form onSubmit={submit} noValidate className="space-y-5">
-          <div className="grid gap-5 sm:grid-cols-2">
+          <div className="grid gap-5 sm:grid-cols-2 grid-cols-1">
             <TextField label="Full name" value={form.name} onChange={(e) => set('name', e.target.value)} error={errors.name} required autoComplete="name" />
             <TextField label="Email" type="email" value={form.email} onChange={(e) => set('email', e.target.value)} error={errors.email} required autoComplete="email" />
             <TextField label="Mobile number" inputMode="tel" value={form.mobile} onChange={(e) => set('mobile', e.target.value)} error={errors.mobile} required autoComplete="tel" />
@@ -138,7 +138,7 @@ function PasswordForm({ user }: { user: User }) {
     <Card>
       <CardHeader title="Password" description="Passwords are stored as SHA-256 digests in this prototype, never in plain text." />
       <CardBody>
-        <form onSubmit={submit} noValidate className="grid gap-5 sm:grid-cols-3">
+        <form onSubmit={submit} noValidate className="grid gap-5 sm:grid-cols-3 grid-cols-1">
           <TextField label="Current password" type="password" autoComplete="current-password" value={current} onChange={(e) => setCurrent(e.target.value)} error={errors.current} required />
           <TextField label="New password" type="password" autoComplete="new-password" value={next} onChange={(e) => setNext(e.target.value)} error={errors.next} required hint="8+ characters, letters and numbers" />
           <TextField label="Confirm new password" type="password" autoComplete="new-password" value={confirm} onChange={(e) => setConfirm(e.target.value)} error={errors.confirm} required />

@@ -228,9 +228,9 @@ export default function ApplyPage() {
   return (
     <div className="space-y-6">
       <PageHeader title="Apply for a certificate" description="Six short steps. Your progress is saved in this tab until you submit." id="apply-title" />
-      <div className="grid gap-6 lg:grid-cols-[15rem_minmax(0,1fr)]">
-        <nav aria-label="Application steps" className="min-w-0">
-          <ol className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1 lg:mx-0 lg:flex-col lg:overflow-visible">
+      <div className="grid gap-6 lg:grid-cols-[15rem_minmax(0,1fr)] grid-cols-1">
+        <nav aria-label="Application steps" className="relative min-w-0">
+          <ol className="relative -mx-1 flex gap-2 overflow-x-auto px-1 pb-1 lg:mx-0 lg:flex-col lg:overflow-visible">
             {STEP_LABELS.map((label, i) => {
               const done = i < draft.step;
               const current = i === draft.step;

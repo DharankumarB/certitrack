@@ -3,7 +3,7 @@ import type { ReactNode } from 'react';
 /** Simple accessible table for summary data (not for paginated record lists, use ResponsiveList). */
 export function Table({ caption, headers, rows }: { caption: string; headers: string[]; rows: ReactNode[][] }) {
   return (
-    <div className="-mx-1 overflow-x-auto">
+    <div className="relative -mx-1 overflow-x-auto">
       <table className="w-full min-w-[640px] border-collapse text-left text-sm">
         <caption className="sr-only">{caption}</caption>
         <thead>

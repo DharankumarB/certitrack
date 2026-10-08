@@ -44,8 +44,17 @@ function deptName(departmentId: string): string {
   return appStore.getState().departments.find((d) => d.id === departmentId)?.name ?? 'Department';
 }
 
+/**
+ * Denied attempts already written in this page session. Each distinct attempt is logged once, which
+ * stops a denied query from re-running forever (every audit write changes the store).
+ */
+const recordedDenials = new Set<string>();
+
 /** Records a denied access attempt for the audit trail. */
 export function recordAccessDenied(viewer: User, applicationId: string, departmentId: string | null, detail: string): void {
+  const key = `${viewer.id}|${applicationId}|${detail}`;
+  if (recordedDenials.has(key)) return;
+  recordedDenials.add(key);
   const at = nowIso();
   appStore.commit((s) =>
     addAudit(s, actorOf(viewer), at, {

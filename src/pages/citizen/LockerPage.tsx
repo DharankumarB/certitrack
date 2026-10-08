@@ -101,7 +101,7 @@ export default function LockerPage() {
         <EmptyState icon={Lock} title="Your locker is empty" description="Certificates appear here once an officer approves your application and it is digitally signed." />
       )}
       {data && data.length > 0 && (
-        <ul className="grid gap-5 md:grid-cols-2 xl:grid-cols-3" aria-label="Certificates">
+        <ul className="grid gap-5 md:grid-cols-2 xl:grid-cols-3 grid-cols-1" aria-label="Certificates">
           {data.map((c) => (
             <li key={c.id}>
               <CertificateCard cert={c} onView={() => open(c)} onDownload={() => void download(c)} onShare={() => setSharing(c)} onVerify={() => setVerifying(c)} />

@@ -132,7 +132,7 @@ export default function OfficerReviewPage() {
         </Alert>
       )}
 
-      <div className="grid gap-6 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.25fr)]">
+      <div className="grid gap-6 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.25fr)] grid-cols-1">
         {/* Left: details */}
         <div className="min-w-0 space-y-6">
           <Card>
@@ -191,7 +191,7 @@ export default function OfficerReviewPage() {
           <Card>
             <CardHeader id="verify-title" title="Document verification" description="Preview each file, check the AI findings, then accept or flag it." actions={<Badge tone={issues ? 'warning' : 'success'}>{issues ? `${issues} to review` : 'No AI issues'}</Badge>} />
             <CardBody className="space-y-5">
-              <div className="grid gap-4 sm:grid-cols-3">
+              <div className="grid gap-4 sm:grid-cols-3 grid-cols-1">
                 <Mini label="Average AI confidence" value={formatPercent(confidence)} />
                 <Mini label="Documents accepted" value={`${documents.filter((d) => d.officerDecision === 'accepted').length} of ${documents.length}`} />
                 <Mini label="Needs changes" value={String(documents.filter((d) => effectiveDocStatus(d) === 'needs_changes').length)} />

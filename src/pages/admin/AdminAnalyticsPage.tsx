@@ -38,14 +38,14 @@ export default function AdminAnalyticsPage() {
       {loading && <LoadingBlock variant="cards" label="Calculating analytics" />}
       {data && (
         <>
-          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
+          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5 grid-cols-1">
             <StatCard label="Submitted" value={data.submitted} icon={Users} hint={`Last ${range} days`} />
             <StatCard label="Approval rate" value={formatPercent(data.approvalRate ?? NaN)} icon={Gauge} tone="green" hint="Of decided files" />
             <StatCard label="Rejection rate" value={formatPercent(data.rejectionRate ?? NaN)} icon={CircleX} tone="red" />
             <StatCard label="Avg processing time" value={formatDays(data.avgDays)} icon={Clock} tone="violet" />
             <StatCard label="AI flag rate" value={formatPercent(data.aiFlagRate ?? NaN)} icon={Activity} tone="amber" hint="Files with a warning" />
           </div>
-          <div className="grid gap-6 xl:grid-cols-2">
+          <div className="grid gap-6 xl:grid-cols-2 grid-cols-1">
             <ChartCard title="Submissions per day" description="Applications received" valueLabel="Applications" data={data.submissionsByDay} className="xl:col-span-2">
               <TrendChart data={data.submissionsByDay} valueLabel="Applications" />
             </ChartCard>

@@ -23,7 +23,8 @@ export default function CitizenTrackPage() {
   usePageTitle('Track application');
   const user = useCurrentUser();
   const [params, setParams] = useSearchParams();
-  const apps = useAppState((s) => s.applications.filter((a) => a.citizenId === user.id).sort((x, y) => Date.parse(y.updatedAt) - Date.parse(x.updatedAt)));
+  const allApps = useAppState((s) => s.applications);
+  const apps = useMemo(() => allApps.filter((a) => a.citizenId === user.id).sort((x, y) => Date.parse(y.updatedAt) - Date.parse(x.updatedAt)), [allApps, user.id]);
   const deliveries = useAppState((s) => s.deliveries);
   const depts = useAppState((s) => s.departments);
   const now = useNow(15_000);
@@ -89,7 +90,7 @@ export default function CitizenTrackPage() {
         </CardBody>
       </Card>
 
-      <div className="grid gap-6 lg:grid-cols-2">
+      <div className="grid gap-6 lg:grid-cols-2 grid-cols-1">
         <Card>
           <CardHeader title="What happened" description="The three most recent events." />
           <CardBody>

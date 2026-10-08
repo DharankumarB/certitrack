@@ -74,7 +74,7 @@ export default function AuditLogsPage() {
         id="audit-title"
       />
       <Card className="p-4 sm:p-5">
-        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-6">
+        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-6 grid-cols-1">
           <TextField label="Search" type="search" value={q} onChange={(e) => setParam('q', e.target.value)} placeholder="User, action or detail" autoComplete="off" wrapperClassName="xl:col-span-2" />
           <SelectField label="Date range" value={filters.range ?? 'all'} onChange={(e) => setParam('range', e.target.value)} options={[{ value: '24h', label: 'Last 24 hours' }, { value: '7d', label: 'Last 7 days' }, { value: '30d', label: 'Last 30 days' }, { value: 'all', label: 'All time' }]} />
           <SelectField label="Role" value={filters.role ?? 'all'} onChange={(e) => setParam('role', e.target.value)} options={[{ value: 'all', label: 'All roles' }, { value: 'citizen', label: 'Citizen' }, { value: 'officer', label: 'Officer' }, { value: 'admin', label: 'Super Admin' }, { value: 'system', label: 'System / AI' }, { value: 'public', label: 'Public' }]} />

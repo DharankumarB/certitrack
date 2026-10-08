@@ -8,7 +8,7 @@ const MAP: Record<Kind, { label: string; tone: BadgeTone; icon: typeof FlaskConi
   simulated: { label: 'Simulated', tone: 'violet', icon: Sparkles, title: 'Behaviour is simulated in the browser for demonstration.' },
   production: { label: 'Production integration required', tone: 'warning', icon: PlugZap, title: 'This capability needs a live integration before go-live.' },
   'demo-data': { label: 'Demo Data', tone: 'neutral', icon: ShieldAlert, title: 'Values are illustrative demo data, not official statistics.' },
-  ai: { label: 'AI-assisted (decision support)', tone: 'info', icon: Sparkles, title: 'AI gives advisory results. The authorised officer makes the final decision.' },
+  ai: { label: 'AI-assisted (decision support)', tone: 'info', icon: Sparkles, title: 'AI gives advisory results. The authorized officer makes the final decision.' },
 };
 
 export function IntegrationBadge({ kind }: { kind: Kind }) {

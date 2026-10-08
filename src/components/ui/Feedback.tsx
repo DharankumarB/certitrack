@@ -68,7 +68,7 @@ export function LoadingBlock({ variant = 'cards', label = 'Loading…' }: { vari
     <div role="status" aria-live="polite" className="w-full">
       <span className="sr-only">{label}</span>
       {variant === 'cards' && (
-        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4 grid-cols-1">
           {Array.from({ length: 4 }, (_, i) => (
             <Skeleton key={i} className="h-28 rounded-xl" />
           ))}
@@ -90,7 +90,7 @@ export function LoadingBlock({ variant = 'cards', label = 'Loading…' }: { vari
       )}
       {variant === 'chart' && <Skeleton className="h-72 rounded-xl" />}
       {variant === 'detail' && (
-        <div className="grid gap-4 lg:grid-cols-3">
+        <div className="grid gap-4 lg:grid-cols-3 grid-cols-1">
           <Skeleton className="h-96 rounded-xl lg:col-span-2" />
           <Skeleton className="h-96 rounded-xl" />
         </div>

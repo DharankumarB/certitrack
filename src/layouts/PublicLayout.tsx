@@ -28,7 +28,7 @@ export function PublicLayout() {
       <header className="sticky top-0 z-30 border-b border-slate-200 bg-white/95 backdrop-blur">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
           <Link to="/" aria-label="CertiTrack home" className="rounded-md focus-visible:outline-2 focus-visible:outline-navy-500">
-            <Logo />
+            <Logo taglineFromSm />
           </Link>
           <nav aria-label="Site" className="hidden items-center gap-1 md:flex">
             {LINKS.map((l) => (
@@ -52,7 +52,7 @@ export function PublicLayout() {
             )}
           </div>
         </div>
-        <nav aria-label="Site (mobile)" className="flex gap-1 overflow-x-auto border-t border-slate-100 px-4 py-2 md:hidden">
+        <nav aria-label="Site (mobile)" className="relative flex gap-1 overflow-x-auto border-t border-slate-100 px-4 py-2 md:hidden">
           {LINKS.map((l) => (
             <Link key={l.to} to={l.to} className="shrink-0 rounded-full bg-slate-100 px-3 py-1.5 text-xs font-semibold text-slate-700 focus-visible:outline-2 focus-visible:outline-navy-500">
               {l.label}
@@ -71,14 +71,14 @@ export function PublicLayout() {
         </Suspense>
       </main>
       <footer className="border-t border-navy-800 bg-navy-900 text-slate-300">
-        <div className="mx-auto grid max-w-7xl gap-8 px-4 py-10 sm:px-6 md:grid-cols-3 lg:px-8">
+        <div className="mx-auto grid max-w-7xl gap-8 px-4 py-10 sm:px-6 md:grid-cols-3 lg:px-8 grid-cols-1">
           <div className="space-y-3">
             <Logo tone="light" />
             <p className="max-w-sm text-sm">CertiTrack is a prototype that shows how one portal could track government certificates from application to delivery.</p>
           </div>
           <div className="space-y-2 text-sm">
             <p className="font-semibold text-white">Prototype status</p>
-            <p>Demo data is fictional. AI checks are decision support, the authorised officer makes the final decision, and certificates in this prototype have no legal validity.</p>
+            <p>Demo data is fictional. AI checks are decision support, the authorized officer makes the final decision, and certificates in this prototype have no legal validity.</p>
           </div>
           <div className="space-y-2 text-sm">
             <p className="font-semibold text-white">Explore</p>

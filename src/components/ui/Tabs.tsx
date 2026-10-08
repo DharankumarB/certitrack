@@ -44,7 +44,7 @@ export function Segmented<T extends string>({ label, value, onChange, options, c
 
 export function Tabs<T extends string>({ label, value, onChange, options }: { label: string; value: T; onChange: (v: T) => void; options: SegmentOption<T>[] }) {
   return (
-    <div role="tablist" aria-label={label} className="flex gap-1 overflow-x-auto border-b border-slate-200">
+    <div role="tablist" aria-label={label} className="relative flex gap-1 overflow-x-auto border-b border-slate-200">
       {options.map((opt) => {
         const active = opt.value === value;
         return (

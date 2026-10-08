@@ -9,14 +9,14 @@ export function LogoMark({ className }: { className?: string }) {
   );
 }
 
-export function Logo({ compact = false, tone = 'dark' }: { compact?: boolean; tone?: 'dark' | 'light' }) {
+export function Logo({ compact = false, tone = 'dark', taglineFromSm = false }: { compact?: boolean; tone?: 'dark' | 'light'; taglineFromSm?: boolean }) {
   return (
     <span className="inline-flex items-center gap-2.5">
       <LogoMark />
       {!compact && (
         <span className="leading-none">
           <span className={cn('block text-lg font-bold tracking-tight', tone === 'dark' ? 'text-navy-900' : 'text-white')}>CertiTrack</span>
-          <span className={cn('mt-1 block text-[11px] font-medium', tone === 'dark' ? 'text-slate-500' : 'text-slate-300')}>One portal · every certificate</span>
+          <span className={cn('mt-1 block text-[11px] font-medium', taglineFromSm && 'hidden sm:block', tone === 'dark' ? 'text-slate-500' : 'text-slate-300')}>One portal · every certificate</span>
         </span>
       )}
     </span>

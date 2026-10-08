@@ -17,7 +17,7 @@ function applicationHref(user: User, id: string): string {
 }
 
 /** Global search across Application IDs, Certificate IDs and applicant names, grouped by type. */
-export function GlobalSearch({ user }: { user: User }) {
+export function GlobalSearch({ user, autoFocus = false, onSelect }: { user: User; autoFocus?: boolean; onSelect?: () => void }) {
   const [query, setQuery] = useState('');
   const [open, setOpen] = useState(false);
   const [results, setResults] = useState<{ query: string; data: SearchResults } | null>(null);
@@ -58,10 +58,11 @@ export function GlobalSearch({ user }: { user: User }) {
   const close = () => {
     setOpen(false);
     setQuery('');
+    onSelect?.();
   };
 
   return (
-    <div ref={rootRef} className="relative min-w-0 md:w-72 lg:w-80">
+    <div ref={rootRef} className="relative min-w-0 w-full">
       <label htmlFor={`${listId}-input`} className="sr-only">
         Search applications, certificates and applicants
       </label>
@@ -76,6 +77,8 @@ export function GlobalSearch({ user }: { user: User }) {
             setOpen(true);
           }}
           onFocus={() => setOpen(true)}
+          autoFocus={autoFocus}
+          data-autofocus={autoFocus ? '' : undefined}
           onKeyDown={(e) => {
             if (e.key === 'Escape') close();
             if (e.key === 'Enter' && shown) {

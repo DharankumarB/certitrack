@@ -36,7 +36,7 @@ export default function AdminDashboardPage() {
       {loading && <LoadingBlock variant="cards" label="Loading portfolio" />}
       {data && (
         <>
-          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-6">
+          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-6 grid-cols-1">
             <StatCard label="Total applications" value={data.kpis.total} icon={FolderOpen} to="/admin/applications" hint="All time (demo)" />
             <StatCard label="Pending" value={data.kpis.pending} icon={Hourglass} tone="amber" hint="Open in departments" />
             <StatCard label="Approved" value={data.kpis.approved} icon={BadgeCheck} tone="green" hint="Approved, issued or delivered" />
@@ -44,7 +44,7 @@ export default function AdminDashboardPage() {
             <StatCard label="Avg processing time" value={formatDays(data.kpis.avgDays)} icon={Activity} tone="violet" hint="Submission to outcome" />
             <StatCard label="Applications today" value={data.kpis.today} icon={CalendarClock} tone="sky" />
           </div>
-          <div className="grid gap-6 xl:grid-cols-2">
+          <div className="grid gap-6 xl:grid-cols-2 grid-cols-1">
             <ChartCard title="Applications by certificate type" description="Volume per certificate" valueLabel="Applications" data={data.byType}>
               <DonutChart data={data.byType} valueLabel="Applications" />
             </ChartCard>
@@ -60,7 +60,7 @@ export default function AdminDashboardPage() {
           </div>
           <ChartCard title="Bottleneck stages" description="Average hours per stage and files waiting now" valueLabel="Average hours" data={data.bottlenecks.map((b) => ({ name: b.stage, value: Math.round(b.avgHours ?? 0) }))}>
             <BarsChart horizontal data={data.bottlenecks.map((b) => ({ name: b.stage, value: Math.round(b.avgHours ?? 0) }))} valueLabel="Average hours" unit=" h" />
-            <ul className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
+            <ul className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-5 grid-cols-1">
               {data.bottlenecks.map((b) => (
                 <li key={b.stage} className="rounded-lg bg-slate-50 p-3 text-sm">
                   <p className="font-semibold text-navy-900">{b.stage}</p>
@@ -73,7 +73,7 @@ export default function AdminDashboardPage() {
           <Card>
             <CardHeader title="Department health" description="Open items, overdue files and AI flags." actions={<Link to="/admin/departments" className="text-sm font-semibold text-navy-800 hover:underline">All departments</Link>} />
             <CardBody>
-              <ul className="grid gap-4 md:grid-cols-3">
+              <ul className="grid gap-4 md:grid-cols-3 grid-cols-1">
                 {data.departments.map((d) => (
                   <li key={d.department.id} className="rounded-xl border border-slate-200 p-4">
                     <p className="font-semibold text-navy-900">{d.department.name}</p>

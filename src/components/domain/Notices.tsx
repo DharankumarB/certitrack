@@ -8,7 +8,7 @@ export function AIDisclaimer({ className }: { className?: string }) {
     <div className={cn('flex items-start gap-3 rounded-xl border border-navy-100 bg-navy-50/70 px-4 py-3 text-sm text-navy-950', className)}>
       <Info className="mt-0.5 size-5 shrink-0 text-navy-700" aria-hidden="true" />
       <p>
-        <span className="font-semibold">AI provides decision support only.</span> The authorised officer makes the final decision.
+        <span className="font-semibold">AI-assisted pre-verification provides decision support only.</span> Final decision is made by the authorized department officer.
       </p>
     </div>
   );

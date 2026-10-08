@@ -39,7 +39,7 @@ export function DemoBanner({ user }: { user: User }) {
             <strong className="font-semibold">Prototype / Demo.</strong> Fictional people and documents. AI, e-sign and courier steps are simulated, and WhatsApp is a preview only.
           </span>
         </p>
-        <Button variant="secondary" size="sm" icon={RotateCcw} onClick={() => setConfirming(true)} className="bg-white">
+        <Button variant="secondary" size="sm" icon={RotateCcw} onClick={() => setConfirming(true)} className="w-full bg-white sm:w-auto">
           Reset demo data
         </Button>
       </div>

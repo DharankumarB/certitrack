@@ -1,4 +1,5 @@
-import { Menu, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
+import { useState } from 'react';
+import { Menu, PanelLeftClose, PanelLeftOpen, Search } from 'lucide-react';
 import type { User } from '../../types';
 import { Logo } from '../ui/Logo';
 import { GlobalSearch } from './GlobalSearch';
@@ -6,9 +7,11 @@ import { NotificationBell } from './NotificationBell';
 import { ProfileMenu } from './ProfileMenu';
 import { ROLE_HOME } from '../../config/navigation';
 import { Button } from '../ui/Button';
+import { Modal } from '../ui/Modal';
 
 export function Topbar({ user, collapsed, onToggleSidebar, onOpenMenu, portalLabel }: { user: User; collapsed: boolean; onToggleSidebar: () => void; onOpenMenu: () => void; portalLabel: string }) {
   const basePath = `/${user.role}`;
+  const [searchOpen, setSearchOpen] = useState(false);
   return (
     <header className="sticky top-0 z-20 border-b border-slate-200 bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/85">
       <div className="flex h-16 items-center gap-2 px-4 sm:gap-3 sm:px-6 lg:px-8">
@@ -22,10 +25,16 @@ export function Topbar({ user, collapsed, onToggleSidebar, onOpenMenu, portalLab
             <p className="truncate text-sm font-semibold text-navy-900">{portalLabel}</p>
           </div>
         </div>
-        <GlobalSearch user={user} />
+        <Button variant="ghost" size="icon" className="md:hidden" onClick={() => setSearchOpen(true)} aria-label="Search applications, certificates and applicants" icon={Search} />
+        <div className="hidden min-w-0 md:block md:w-64 xl:w-80">
+          <GlobalSearch user={user} />
+        </div>
         <NotificationBell user={user} basePath={basePath} />
         <ProfileMenu user={user} basePath={basePath} />
       </div>
+      <Modal open={searchOpen} onClose={() => setSearchOpen(false)} title="Search" description="Find by Application ID, certificate number or applicant name." size="md">
+        <GlobalSearch user={user} autoFocus onSelect={() => setSearchOpen(false)} />
+      </Modal>
     </header>
   );
 }

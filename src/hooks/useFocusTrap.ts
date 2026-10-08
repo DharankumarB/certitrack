@@ -12,8 +12,10 @@ export function useFocusTrap(ref: RefObject<HTMLElement | null>, active: boolean
     const previous = document.activeElement as HTMLElement | null;
     const node = ref.current;
     const focusables = () => (node ? Array.from(node.querySelectorAll<HTMLElement>(FOCUSABLE)).filter((el) => el.offsetParent !== null || el === document.activeElement) : []);
+    // An explicit [data-autofocus] target wins; otherwise focus the first focusable element.
+    const preferred = node?.querySelector<HTMLElement>('[data-autofocus]');
     const first = focusables()[0];
-    (first ?? node)?.focus();
+    (preferred ?? first ?? node)?.focus();
     const onKey = (event: KeyboardEvent) => {
       if (event.key === 'Escape' && onEscape) {
         event.stopPropagation();

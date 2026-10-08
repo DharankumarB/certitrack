@@ -65,7 +65,7 @@ export default function CitizenApplicationsPage() {
     <div className="space-y-6">
       <PageHeader title="My applications" description="Every application you have submitted, with its current stage." actions={<ButtonLink to="/citizen/apply" icon={FilePlus2}>New application</ButtonLink>} id="apps-title" />
       <Card className="p-4 sm:p-5">
-        <div className="grid gap-4 md:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)_minmax(0,1fr)]">
+        <div className="grid gap-4 md:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)_minmax(0,1fr)] grid-cols-1">
           <TextField label="Search" type="search" placeholder="Application ID or certificate" value={q} onChange={(e) => setParam('q', e.target.value)} autoComplete="off" />
           <SelectField label="Status" value={status} onChange={(e) => setParam('status', e.target.value)} options={STATUS_FILTERS} />
           <SelectField label="Certificate" value={type} onChange={(e) => setParam('type', e.target.value)} options={[{ value: 'all', label: 'All certificates' }, ...CERTIFICATE_TYPE_LIST.map((c) => ({ value: c.id, label: c.label }))]} />

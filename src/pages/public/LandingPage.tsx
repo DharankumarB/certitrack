@@ -45,7 +45,7 @@ export default function LandingPage() {
       {/* Hero */}
       <section aria-labelledby="hero-title" className="relative overflow-hidden bg-navy-900 text-white">
         <div aria-hidden="true" className="pointer-events-none absolute inset-0 opacity-[0.07] [background-image:radial-gradient(circle_at_1px_1px,#fff_1px,transparent_0)] [background-size:22px_22px]" />
-        <div className="relative mx-auto grid max-w-7xl gap-12 px-4 py-14 sm:px-6 md:py-20 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:px-8">
+        <div className="relative mx-auto grid max-w-7xl gap-12 px-4 py-14 sm:px-6 md:py-20 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:px-8 grid-cols-1">
           <div className="min-w-0 space-y-6">
             <div className="flex flex-wrap items-center gap-2">
               <Badge tone="demo" icon={Sparkles}>Prototype · demo data only</Badge>
@@ -93,7 +93,7 @@ export default function LandingPage() {
               </li>
               <li className="flex items-start gap-3 rounded-lg bg-slate-50 p-3">
                 <Fingerprint className="mt-0.5 size-4 shrink-0 text-navy-700" aria-hidden="true" />
-                <span>Officer review in the Caste Certificate Department. Decision by the authorised officer.</span>
+                <span>Officer review in the Caste Certificate Department. Decision by the authorized officer.</span>
               </li>
               <li className="flex items-start gap-3 rounded-lg bg-slate-50 p-3">
                 <Bell className="mt-0.5 size-4 shrink-0 text-navy-700" aria-hidden="true" />
@@ -107,7 +107,7 @@ export default function LandingPage() {
       {/* Problem */}
       <section aria-labelledby="problem-title" className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
         <SectionHeading eyebrow="The problem" id="problem-title" title="Certificates still move through separate offices, forms and phone calls." />
-        <div className="mt-10 grid gap-5 md:grid-cols-3">
+        <div className="mt-10 grid gap-5 md:grid-cols-3 grid-cols-1">
           {[
             { t: 'Separate portals', d: 'Each certificate has its own website, login and form, so citizens repeat the same details.' },
             { t: 'Unclear status', d: 'Applicants ask “where is my file?” because no single view shows the stage, the department and the next step.' },
@@ -127,7 +127,7 @@ export default function LandingPage() {
       <section aria-labelledby="how-title" className="bg-white py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <SectionHeading eyebrow="How it works" id="how-title" title="Six stages, one timeline" text="Every stage shows its timestamp, department, action and description. Click any stage in the app for full detail." />
-          <ol className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <ol className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 grid-cols-1">
             {WORKFLOW_STAGES.map((s, i) => (
               <li key={s.id} className="flex gap-4 rounded-xl border border-slate-200 p-5">
                 <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-navy-800 text-sm font-bold text-white">{i + 1}</span>
@@ -138,7 +138,7 @@ export default function LandingPage() {
               </li>
             ))}
           </ol>
-          <div className="mt-10 grid gap-4 md:grid-cols-3">
+          <div className="mt-10 grid gap-4 md:grid-cols-3 grid-cols-1">
             {CERTIFICATE_TYPE_LIST.map((c) => (
               <div key={c.id} className="rounded-xl bg-slate-50 p-5">
                 <p className="font-semibold text-navy-900">{c.label}</p>
@@ -151,7 +151,7 @@ export default function LandingPage() {
       </section>
 
       {/* AI document check */}
-      <section aria-labelledby="ai-title" className="mx-auto grid max-w-7xl gap-10 px-4 py-16 sm:px-6 lg:grid-cols-2 lg:items-center lg:px-8">
+      <section aria-labelledby="ai-title" className="mx-auto grid max-w-7xl gap-10 px-4 py-16 sm:px-6 lg:grid-cols-2 lg:items-center lg:px-8 grid-cols-1">
         <div className="space-y-5">
           <SectionHeading eyebrow="AI document check" id="ai-title" title="Catch problems before they reach a queue." text="Nine automated pre-checks run when you upload. If something is wrong, you see exactly what to fix and can upload again before you submit." />
           <AIDisclaimer />
@@ -168,7 +168,7 @@ export default function LandingPage() {
 
       {/* Live tracking + locker */}
       <section aria-labelledby="track-title" className="bg-navy-50/70 py-16">
-        <div className="mx-auto grid max-w-7xl gap-6 px-4 sm:px-6 md:grid-cols-2 lg:px-8">
+        <div className="mx-auto grid max-w-7xl gap-6 px-4 sm:px-6 md:grid-cols-2 lg:px-8 grid-cols-1">
           <Card>
             <CardBody className="space-y-4">
               <Route className="size-6 text-navy-700" aria-hidden="true" />
@@ -192,7 +192,7 @@ export default function LandingPage() {
       </section>
 
       {/* WhatsApp */}
-      <section aria-labelledby="wa-title" className="mx-auto grid max-w-7xl items-center gap-10 px-4 py-16 sm:px-6 lg:grid-cols-2 lg:px-8">
+      <section aria-labelledby="wa-title" className="mx-auto grid max-w-7xl items-center gap-10 px-4 py-16 sm:px-6 lg:grid-cols-2 lg:px-8 grid-cols-1">
         <div className="space-y-5">
           <SectionHeading eyebrow="WhatsApp updates" id="wa-title" title="Updates where people already look." text="Citizens can choose WhatsApp or e-mail alongside in-app alerts. In this prototype the message is shown as a preview and nothing is sent." />
           <div className="flex flex-wrap gap-2">
@@ -207,7 +207,7 @@ export default function LandingPage() {
       <section aria-labelledby="security-title" className="bg-white py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <SectionHeading eyebrow="Role-based security" id="security-title" title="Each role sees only what it needs." />
-          <div className="mt-10 grid gap-5 md:grid-cols-3">
+          <div className="mt-10 grid gap-5 md:grid-cols-3 grid-cols-1">
             {ROLES.map((r) => (
               <div key={r.title} className="rounded-xl border border-slate-200 p-6">
                 <r.icon className="size-6 text-navy-700" aria-hidden="true" />
@@ -221,10 +221,10 @@ export default function LandingPage() {
 
       {/* Impact & roadmap */}
       <section aria-labelledby="impact-title" className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-        <div className="grid gap-10 lg:grid-cols-2">
+        <div className="grid gap-10 lg:grid-cols-2 grid-cols-1">
           <div className="space-y-5">
             <SectionHeading eyebrow="Impact" id="impact-title" title="Measurable service standards" text="The prototype publishes a decision deadline per department. Pilot results would be measured against these targets, not assumed." />
-            <ul className="grid gap-3 sm:grid-cols-3">
+            <ul className="grid gap-3 sm:grid-cols-3 grid-cols-1">
               {mockImpact.map((i) => (
                 <li key={i.label} className="rounded-xl border border-slate-200 bg-white p-4">
                   <p className="text-2xl font-bold text-navy-900">{i.value}</p>

@@ -44,7 +44,7 @@ export default function PublicTrackPage() {
   return (
     <div className="mx-auto max-w-4xl px-4 py-8 sm:px-6 md:py-12 lg:px-8">
       <PageHeader title="Track an application" description="Enter your Application ID and the last four digits of your registered mobile number. This shows the current stage and next step, without signing in." id="track-title" />
-      <div className="grid gap-6 md:grid-cols-[minmax(0,1fr)_minmax(0,1.3fr)]">
+      <div className="grid gap-6 md:grid-cols-[minmax(0,1fr)_minmax(0,1.3fr)] grid-cols-1">
         <Card className="self-start">
           <CardBody className="space-y-5">
             {formError && <Alert tone="danger">{formError}</Alert>}
@@ -72,7 +72,7 @@ export default function PublicTrackPage() {
                   </div>
                   <Badge tone="info">{result.statusLabel}</Badge>
                 </div>
-                <dl className="grid gap-3 text-sm sm:grid-cols-3">
+                <dl className="grid gap-3 text-sm sm:grid-cols-3 grid-cols-1">
                   <div>
                     <dt className="text-xs text-slate-500">Submitted</dt>
                     <dd className="font-medium">{formatDate(result.submittedAt)}</dd>

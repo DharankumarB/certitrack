@@ -26,7 +26,7 @@ function StepIcon({ state }: { state: StepState }) {
 /** Horizontal six-stage tracker. Scrolls on phones instead of squeezing labels. */
 export function StageProgress({ steps, onSelect, selected }: { steps: StageStep[]; onSelect?: (step: StageStep) => void; selected?: string }) {
   return (
-    <div className="-mx-1 overflow-x-auto px-1 pb-1">
+    <div className="relative -mx-1 overflow-x-auto px-1 pb-1">
       <ol className="flex min-w-[560px] items-start gap-0" aria-label="Application stages">
         {steps.map((step, index) => {
           const style = STATE_STYLE[step.state];
@@ -119,7 +119,7 @@ export function ApplicationTimeline({ app, delivery, compact = false }: { app: A
                       <p className="text-sm font-semibold text-navy-900">{e.action}</p>
                       <Badge tone={e.tone === 'success' ? 'success' : e.tone === 'warning' ? 'warning' : e.tone === 'danger' ? 'danger' : 'info'}>{formatDateTime(e.at)}</Badge>
                     </div>
-                    <dl className="mt-3 grid gap-2 text-sm sm:grid-cols-2">
+                    <dl className="mt-3 grid gap-2 text-sm sm:grid-cols-2 grid-cols-1">
                       <div>
                         <dt className="text-xs uppercase tracking-wide text-slate-500">Department</dt>
                         <dd className="text-slate-800">{e.department ?? 'CertiTrack (self-service)'}</dd>
