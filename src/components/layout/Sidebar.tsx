@@ -1,6 +1,6 @@
 import { LogOut, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { NAV } from '../../config/navigation';
+import { navigationFor } from '../../config/navigation';
 import type { User } from '../../types';
 import { Logo } from '../ui/Logo';
 import { NavList } from './NavList';
@@ -18,7 +18,7 @@ export function Sidebar({ user, collapsed, onToggle, counts }: { user: User; col
         <Logo compact={collapsed} tone="light" />
       </div>
       <nav aria-label="Main navigation" className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden px-3 py-4">
-        <NavList items={NAV[user.role]} counts={counts} collapsed={collapsed} id="sidebar-nav" />
+        <NavList items={navigationFor(user)} counts={counts} collapsed={collapsed} id="sidebar-nav" />
       </nav>
       <div className={cn('shrink-0 border-t border-white/10 p-3', collapsed && 'flex flex-col items-center gap-2')}>
         <div className={cn('flex items-center gap-3', collapsed && 'justify-center')}>
@@ -26,7 +26,7 @@ export function Sidebar({ user, collapsed, onToggle, counts }: { user: User; col
           {!collapsed && (
             <div className="min-w-0 flex-1">
               <p className="truncate text-sm font-semibold">{user.name}</p>
-              <p className="truncate text-xs text-slate-300">{user.role === 'citizen' ? 'Citizen' : user.role === 'officer' ? 'Department officer' : 'Super Admin'}</p>
+              <p className="truncate text-xs text-slate-300">{user.role === 'citizen' ? 'Citizen' : 'departmentId' in user ? 'Department staff' : 'Super Admin'}</p>
             </div>
           )}
         </div>

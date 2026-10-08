@@ -32,7 +32,7 @@ import { canDecide, canViewApplication, isCitizen, isOfficer } from './access';
 import { scheduleSimulation } from './simulation';
 
 export function officerIdsFor(departmentId: string): string[] {
-  return appStore.getState().users.filter((u) => u.role === 'officer' && u.active && u.departmentId === departmentId).map((u) => u.id);
+  return appStore.getState().users.filter((u) => 'employeeId' in u && u.active && u.departmentId === departmentId).map((u) => u.id);
 }
 
 function ev(at: string, stage: TimelineEvent['stage'], key: string, action: string, description: string, department: string | null, actor: { name: string; role: string }, tone: TimelineEvent['tone']): EventSpec {

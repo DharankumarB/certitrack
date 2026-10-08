@@ -45,7 +45,7 @@ export function DocumentCard({ doc, children, showAi = true }: { doc: Pick<Docum
         </div>
         <div className="flex flex-col items-end gap-2">
           <DocumentStatusBadge status={status} />
-          {showAi && doc.ai && <span className="text-xs text-slate-600">AI confidence {formatPercent(doc.ai.confidence)}</span>}
+          {showAi && doc.ai && <span className="text-xs text-slate-600">AI Verification Confidence {formatPercent(doc.ai.overallAiVerificationConfidence ?? doc.ai.confidence)}</span>}
         </div>
       </div>
       {doc.officerRemark && (
@@ -147,7 +147,13 @@ export function AIPanel({ ai, compact = false }: { ai: AIValidationResult | null
   const checks = AI_CHECK_ORDER.map((key) => ai.checks.find((c) => c.key === key)).filter((c): c is NonNullable<typeof c> => Boolean(c));
   const passed = checks.filter((c) => c.status === 'pass').length;
   const applicable = checks.filter((c) => c.status !== 'na').length;
-  const tone = ai.confidence >= 0.9 ? 'green' : ai.confidence >= 0.75 ? 'amber' : 'red';
+  const score = ai.overallAiVerificationConfidence ?? ai.confidence;
+  const qualityScore = ai.imageQualityScore ?? 0;
+  const documentTypeConfidence = ai.documentTypeConfidence ?? 0;
+  const ocrConfidence = ai.ocrConfidence ?? 0;
+  const extractedFields = ai.extractedFields ?? ai.ocr;
+  const forensicIndicators = ai.forensicIndicators ?? [];
+  const tone = score >= 0.9 ? 'green' : score >= 0.75 ? 'amber' : 'red';
   return (
     <section aria-labelledby="ai-panel-title" className="space-y-4">
       <div className="rounded-xl border border-navy-100 bg-navy-50/60 p-4">
@@ -159,12 +165,12 @@ export function AIPanel({ ai, compact = false }: { ai: AIValidationResult | null
         </div>
         <div className="mt-3 grid gap-3 sm:grid-cols-[1fr_auto] sm:items-center grid-cols-1">
           <div>
-            <p className="text-xs text-slate-600">Confidence</p>
+            <p className="text-xs text-slate-600">AI Verification Confidence</p>
             <div className="mt-1 flex items-center gap-3">
               <div className="flex-1">
-                <ProgressBar value={ai.confidence * 100} label={`AI confidence ${formatPercent(ai.confidence)}`} tone={tone === 'green' ? 'green' : tone === 'amber' ? 'amber' : 'red'} />
+                <ProgressBar value={score * 100} label={`AI Verification Confidence ${formatPercent(score)}`} tone={tone === 'green' ? 'green' : tone === 'amber' ? 'amber' : 'red'} />
               </div>
-              <span className="text-sm font-bold tabular-nums text-navy-900">{formatPercent(ai.confidence)}</span>
+              <span className="text-sm font-bold tabular-nums text-navy-900">{formatPercent(score)}</span>
             </div>
           </div>
           <p className="text-sm text-slate-700">
@@ -172,6 +178,10 @@ export function AIPanel({ ai, compact = false }: { ai: AIValidationResult | null
           </p>
         </div>
         <p className="mt-3 text-sm text-slate-800">
+          <span className="font-semibold">Final recommendation: </span>
+          {ai.finalRecommendation}
+        </p>
+        <p className="mt-2 text-sm text-slate-800">
           <span className="font-semibold">Recommended next step: </span>
           {ai.recommendedAction}
         </p>
@@ -180,6 +190,44 @@ export function AIPanel({ ai, compact = false }: { ai: AIValidationResult | null
             Detected: {ai.detectedType} · Expected: {ai.expectedType} · Engine {AI_ENGINE_ID} · {formatDateTime(ai.runAt)}
           </p>
         )}
+      </div>
+
+      <div className="rounded-xl border border-slate-200 bg-white p-4">
+        <h4 className="text-sm font-semibold text-navy-900">Verification pipeline summary</h4>
+        <dl className="mt-3 grid gap-2 sm:grid-cols-2">
+          <div className="rounded-lg bg-slate-50 p-2.5">
+            <dt className="text-[11px] uppercase tracking-wide text-slate-500">File validity</dt>
+            <dd className="mt-1 text-sm font-semibold text-slate-900">{ai.fileValidity}</dd>
+          </div>
+          <div className="rounded-lg bg-slate-50 p-2.5">
+            <dt className="text-[11px] uppercase tracking-wide text-slate-500">Image quality score</dt>
+            <dd className="mt-1 text-sm font-semibold text-slate-900">{qualityScore.toFixed(1)}/100</dd>
+          </div>
+          <div className="rounded-lg bg-slate-50 p-2.5">
+            <dt className="text-[11px] uppercase tracking-wide text-slate-500">Document type</dt>
+            <dd className="mt-1 text-sm font-semibold text-slate-900">{ai.documentType}</dd>
+          </div>
+          <div className="rounded-lg bg-slate-50 p-2.5">
+            <dt className="text-[11px] uppercase tracking-wide text-slate-500">Document type confidence</dt>
+            <dd className="mt-1 text-sm font-semibold text-slate-900">{(documentTypeConfidence * 100).toFixed(0)}%</dd>
+          </div>
+          <div className="rounded-lg bg-slate-50 p-2.5">
+            <dt className="text-[11px] uppercase tracking-wide text-slate-500">OCR confidence</dt>
+            <dd className="mt-1 text-sm font-semibold text-slate-900">{(ocrConfidence * 100).toFixed(0)}%</dd>
+          </div>
+          <div className="rounded-lg bg-slate-50 p-2.5">
+            <dt className="text-[11px] uppercase tracking-wide text-slate-500">Field matching result</dt>
+            <dd className="mt-1 text-sm font-semibold text-slate-900">{ai.fieldMatchingResult}</dd>
+          </div>
+          <div className="rounded-lg bg-slate-50 p-2.5">
+            <dt className="text-[11px] uppercase tracking-wide text-slate-500">Consistency result</dt>
+            <dd className="mt-1 text-sm font-semibold text-slate-900">{ai.consistencyResult}</dd>
+          </div>
+          <div className="rounded-lg bg-slate-50 p-2.5">
+            <dt className="text-[11px] uppercase tracking-wide text-slate-500">Overall AI Verification Confidence</dt>
+            <dd className="mt-1 text-sm font-semibold text-slate-900">{(score * 100).toFixed(0)}%</dd>
+          </div>
+        </dl>
       </div>
 
       <ul className="divide-y divide-slate-100 rounded-xl border border-slate-200 bg-white">
@@ -206,7 +254,7 @@ export function AIPanel({ ai, compact = false }: { ai: AIValidationResult | null
             <Eye className="size-4" aria-hidden="true" /> Extracted fields (OCR)
           </h4>
           <dl className="divide-y divide-slate-100">
-            {ai.ocr.map((f) => (
+            {extractedFields.map((f) => (
               <div key={f.label} className="grid grid-cols-[minmax(0,8rem)_1fr_auto] items-center gap-3 px-4 py-2.5 text-sm">
                 <dt className="text-slate-600">{f.label}</dt>
                 <dd className="min-w-0 truncate font-medium text-slate-900">{f.value}</dd>
@@ -214,6 +262,22 @@ export function AIPanel({ ai, compact = false }: { ai: AIValidationResult | null
               </div>
             ))}
           </dl>
+        </div>
+      )}
+
+      {forensicIndicators.length > 0 && (
+        <div className="rounded-xl border border-slate-200 bg-white p-4">
+          <h4 className="flex items-center gap-2 text-sm font-semibold text-navy-900">
+            <ShieldAlert className="size-4" aria-hidden="true" /> Forensic indicators
+          </h4>
+          <ul className="mt-2 space-y-2 text-sm text-slate-700">
+            {forensicIndicators.map((indicator) => (
+              <li key={indicator} className="flex items-start gap-2">
+                <span className="mt-1.5 size-1.5 rounded-full bg-navy-700" aria-hidden="true" />
+                <span>{indicator}</span>
+              </li>
+            ))}
+          </ul>
         </div>
       )}
 

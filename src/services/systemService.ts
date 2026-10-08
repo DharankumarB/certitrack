@@ -5,6 +5,7 @@ import { clearBlobs } from './blobStore';
 import { ServiceError, nowIso, simulateLatency } from './api';
 import { actorOf } from './actors';
 import { isAdmin } from './access';
+import { buildSeedData } from '../data/seed';
 
 export async function getSettings(): Promise<SystemSettings> {
   await simulateLatency(60);
@@ -32,11 +33,17 @@ export async function updateSettings(admin: User, patch: Partial<SystemSettings>
   return appStore.getState().settings;
 }
 
-/** Restores the demo dataset to its starting state. Only the Super Admin may do this. */
+/** Restores fictional sample records while preserving locally registered accounts. */
 export async function resetDemoData(actor: User): Promise<void> {
   await simulateLatency(300);
   await clearBlobs();
-  appStore.reseed();
+  const sample = buildSeedData(Date.now());
+  const accounts = appStore.getState().users.filter((user) => user.passwordDigest.startsWith('pbkdf2$'));
+  appStore.replace({
+    ...sample,
+    users: [...sample.users, ...accounts],
+    counters: { ...sample.counters, user: sample.users.length + accounts.length + 1 },
+  });
   const at = nowIso();
   appStore.commit((s) => addAudit(s, actorOf(actor), at, { action: 'demo_reset', detail: 'Demo data restored to the starting state' }));
 }
@@ -57,7 +64,7 @@ export async function getSystemActivity(admin: User): Promise<SystemActivity> {
   const s = appStore.getState();
   return {
     auditLogs: s.auditLogs.slice(0, 60),
-    systemNotifications: s.notifications.filter((n) => n.recipientRole === 'admin').slice(0, 20),
+    systemNotifications: s.notifications.filter((n) => n.recipientRole === 'super_admin' || n.recipientRole === 'admin').slice(0, 20),
     deliveriesInProgress: s.deliveries.filter((d) => d.status !== 'delivered'),
     counts: {
       applications: s.applications.length,
@@ -72,4 +79,3 @@ export async function getSystemActivity(admin: User): Promise<SystemActivity> {
     seededAt: s.seededAt,
   };
 }
-

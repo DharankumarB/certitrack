@@ -68,13 +68,12 @@ export default function ForgotPasswordPage() {
                 If an account exists for <span className="font-semibold">{email}</span>, a reset link would be sent. In this prototype no email is sent, so nothing arrives.
               </p>
               <Alert tone="info" className="text-left">
-                Use a demo account to explore the product instead. The demo password is shown on the sign-in page.
+                Password recovery is not connected in this local prototype. Contact your system administrator for help restoring access.
               </Alert>
               <div className="flex flex-col gap-3 sm:flex-row sm:justify-center">
-                <ButtonLink to="/login#demo" variant="secondary">
-                  Open demo accounts
+                <ButtonLink to="/login" variant="secondary">
+                  Return to sign in
                 </ButtonLink>
-                <ButtonLink to="/login">Back to sign in</ButtonLink>
               </div>
             </div>
           )}

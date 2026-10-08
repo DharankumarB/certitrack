@@ -34,7 +34,7 @@ export async function listDepartmentSummaries(viewer: User, now: number = Date.n
   return visibleDepartments(viewer).map((department) => ({
     department,
     metrics: departmentMetrics(department, s.applications, s.documents, now),
-    officers: s.users.filter((u): u is OfficerUser => u.role === 'officer' && u.departmentId === department.id),
+    officers: s.users.filter((u): u is OfficerUser => 'employeeId' in u && u.active && u.departmentId === department.id),
   }));
 }
 
@@ -51,7 +51,7 @@ export async function getDepartmentDetail(viewer: User, departmentId: string, no
   return {
     department,
     metrics: departmentMetrics(department, s.applications, s.documents, now),
-    officers: s.users.filter((u): u is OfficerUser => u.role === 'officer' && u.departmentId === departmentId),
+    officers: s.users.filter((u): u is OfficerUser => 'employeeId' in u && u.active && u.departmentId === departmentId),
     applications: apps,
     bottlenecks: stageBottlenecks(apps),
     statusBreakdown: countBy(apps, statusGroup, STATUS_GROUP_ORDER),
@@ -76,13 +76,13 @@ export async function setOfficerActive(admin: User, userId: string, active: bool
   await simulateLatency(120);
   if (!isAdmin(admin)) throw new ServiceError('FORBIDDEN', 'Only Super Admins can change officer access.');
   const target = appStore.getState().users.find((u) => u.id === userId);
-  if (!target || target.role !== 'officer') throw new ServiceError('NOT_FOUND', 'Officer not found.');
+  if (!target || !('employeeId' in target)) throw new ServiceError('NOT_FOUND', 'Department staff account not found.');
   const at = nowIso();
   appStore.commit((s) => {
-    const next = updateUser(s, userId, (u) => ({ ...u, active }));
+    const next = updateUser(s, userId, (u) => ({ ...u, active, accountStatus: active ? 'approved' : 'suspended' }));
     return addAudit(next, actorOf(admin), at, {
       action: 'officer_status_changed',
-      departmentId: target.role === 'officer' ? target.departmentId : null,
+      departmentId: 'departmentId' in target ? target.departmentId : null,
       result: 'success',
       detail: `${target.name} ${active ? 're-enabled' : 'disabled'}`,
     });

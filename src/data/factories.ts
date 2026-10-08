@@ -21,9 +21,7 @@ import { CERTIFICATE_TYPES, REQUIREMENTS } from '../config/certificateTypes';
 import { analyzeDocument, fingerprintFile } from '../services/aiEngine';
 import { addDays, formatDate } from '../utils/format';
 import { randomCode } from '../utils/random';
-import { DEMO_PASSWORD_DIGEST } from '../config/demo';
 
-export const DEMO_DIGEST = DEMO_PASSWORD_DIGEST;
 export const MIN = 60_000;
 export const HOUR = 60 * MIN;
 export const DAY = 24 * HOUR;

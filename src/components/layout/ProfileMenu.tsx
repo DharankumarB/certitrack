@@ -9,7 +9,7 @@ import type { User } from '../../types';
 export function ProfileMenu({ user, basePath }: { user: User; basePath: string }) {
   const { signOut } = useAuth();
   const navigate = useNavigate();
-  const subtitle = user.role === 'officer' ? `${ROLE_LABEL.officer} · ${user.departmentId === 'caste' ? 'Caste' : user.departmentId === 'income' ? 'Income' : 'Domicile'}` : ROLE_LABEL[user.role];
+  const subtitle = 'departmentId' in user ? `${ROLE_LABEL.department_staff} · ${user.departmentId === 'caste' ? 'Caste' : user.departmentId === 'income' ? 'Income' : 'Domicile'}` : ROLE_LABEL[user.role];
   return (
     <Popover
       label="Account menu"

@@ -38,7 +38,7 @@ export default function HelpPage() {
       <div className="grid gap-8 lg:grid-cols-[1fr_20rem] grid-cols-1">
         <div className="min-w-0 space-y-6">
           <TextField label="Search help" type="search" value={q} onChange={(e) => setQ(e.target.value)} placeholder="For example: documents, WhatsApp, rejected" autoComplete="off" wrapperClassName="max-w-xl" />
-          {groups.length === 0 && <EmptyState icon={Search} title="No matching answers" description="Try a shorter word, or open the demo steps for a guided tour." action={<ButtonLink to="/login#demo" variant="secondary">Open demo accounts</ButtonLink>} />}
+          {groups.length === 0 && <EmptyState icon={Search} title="No matching answers" description="Try a shorter word, or create an account to get started." action={<ButtonLink to="/signup" variant="secondary">Create an account</ButtonLink>} />}
           {groups.map(([category, items]) => (
             <Card key={category}>
               <CardHeader title={category} />

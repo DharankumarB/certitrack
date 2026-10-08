@@ -14,7 +14,7 @@ import type {
 } from '../types';
 import { CERTIFICATE_TYPES, CASTE_CATEGORIES, FINANCIAL_YEARS, INCOME_SOURCES } from '../config/certificateTypes';
 import { DISTRICT_TALUKS, DISTRICTS, GENDER_OPTIONS } from '../config/geography';
-import { DAY, DEVICE_LABELS, DEMO_DIGEST, DocSpec, HOUR, MIN, buildApplication, buildCertificate, buildDelivery, buildDocuments, buildTimeline, makeAudit } from './factories';
+import { DAY, DEVICE_LABELS, DocSpec, HOUR, MIN, buildApplication, buildCertificate, buildDelivery, buildDocuments, buildTimeline, makeAudit } from './factories';
 import { mulberry32, pick, randInt, Rng } from '../utils/random';
 import { AI_ENGINE_ID } from '../services/aiEngine';
 import { mockDepartments } from './mockDepartments';
@@ -86,8 +86,8 @@ function makeCitizen(i: number, rng: Rng, now: number): CitizenUser {
     email: `${first.toLowerCase()}.${last.toLowerCase()}${i + 1}@mail.example`,
     mobile: `9${String(100_000_000 + Math.floor(rng() * 899_999_999)).slice(0, 9)}`,
     createdAt: iso(now - 200 * DAY),
-    passwordDigest: DEMO_DIGEST,
-    active: true,
+    passwordDigest: '',
+    active: false,
     lastLoginAt: null,
     dateOfBirth: `${randInt(rng, 1968, 2004)}-${String(randInt(rng, 1, 12)).padStart(2, '0')}-${String(randInt(rng, 1, 27)).padStart(2, '0')}`,
     gender: pick(rng, GENDER_OPTIONS),
@@ -385,4 +385,3 @@ export function generateSynthetic(now: number, curatedNumbers: Set<number>, offi
     nextCertificateNumber: certNumber,
   };
 }
-

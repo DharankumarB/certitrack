@@ -3,18 +3,19 @@ import { buildSeedData, DATA_SCHEMA_VERSION } from '../data/seed';
 
 export const STORAGE_KEY = 'certitrack:data:v1';
 
-/** Demo data older than this is regenerated on load so dates stay relative to "today". */
-export const SEED_MAX_AGE_MS = 24 * 60 * 60 * 1000;
-
 export type Mutator = (state: AppData) => AppData;
 
 type Listener = () => void;
 
 function isValidData(value: unknown): value is AppData {
+  return isAppDataShape(value) && value.schemaVersion === DATA_SCHEMA_VERSION;
+}
+
+function isAppDataShape(value: unknown): value is AppData {
   if (!value || typeof value !== 'object') return false;
   const v = value as Partial<AppData>;
   return (
-    v.schemaVersion === DATA_SCHEMA_VERSION &&
+    typeof v.schemaVersion === 'number' &&
     typeof v.rev === 'number' &&
     Array.isArray(v.users) &&
     Array.isArray(v.applications) &&
@@ -147,12 +148,12 @@ export class AppStore {
         const parsed = raw ? this.parse(raw) : null;
         if (parsed) {
           this.raw = raw;
-          const age = Date.now() - Date.parse(parsed.seededAt);
-          if (Number.isFinite(age) && age > SEED_MAX_AGE_MS) {
-            this.notice = 'Demo data was refreshed to today’s date.';
-            return this.seedAndPersist();
-          }
           return parsed;
+        }
+        const migrated = raw ? this.migrateVersionTwoData(raw) : null;
+        if (migrated) {
+          this.persist(migrated);
+          return migrated;
         }
         if (raw) this.notice = 'Stored demo data was invalid, so it was reset to the starting state.';
       } catch {
@@ -160,6 +161,27 @@ export class AppStore {
       }
     }
     return this.seedAndPersist();
+  }
+
+  private migrateVersionTwoData(raw: string): AppData | null {
+    try {
+      const parsed: unknown = JSON.parse(raw);
+      if (!isAppDataShape(parsed) || parsed.schemaVersion !== 2) return null;
+      const seededAdmin = this.seed().users.find((user) => user.email.toLowerCase() === 'admin@gmail.com');
+      if (!seededAdmin || (seededAdmin.role !== 'super_admin' && seededAdmin.role !== 'admin')) return null;
+      const existingAdmin = parsed.users.find((user) => user.email.toLowerCase() === seededAdmin.email.toLowerCase());
+      const admin = existingAdmin ? { ...seededAdmin, id: existingAdmin.id } : seededAdmin;
+      const users = [...parsed.users.filter((user) => user.email.toLowerCase() !== seededAdmin.email.toLowerCase()), admin];
+      return {
+        ...parsed,
+        schemaVersion: DATA_SCHEMA_VERSION,
+        rev: parsed.rev + 1,
+        users,
+        counters: { ...parsed.counters, user: Math.max(parsed.counters.user, users.length + 1) },
+      };
+    } catch {
+      return null;
+    }
   }
 
   private seedAndPersist(): AppData {

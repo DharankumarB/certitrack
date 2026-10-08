@@ -7,21 +7,30 @@ import { isValidEmail, isValidMobile, validateDob, validateName, validatePasswor
 import { computeSteps } from '../utils/stages';
 import { filterApplications, groupDocumentsByApp } from '../utils/applicationRules';
 import { stageBottlenecks } from '../utils/analytics';
+import { DEFAULT_ADMIN_EMAIL, DEFAULT_ADMIN_ID, DEFAULT_ADMIN_PASSWORD, SAMPLE_CITIZEN_ID } from '../data/mockUsers';
+import type { AdminUser, OfficerUser } from '../types';
 
 const NOW = Date.parse('2026-10-08T09:00:00.000Z');
 const data = buildSeedData(NOW);
 
 describe('seed data', () => {
-  it('has the demo accounts and staff', () => {
-    const roles = data.users.map((u) => u.role);
-    expect(data.users.find((u) => u.id === 'usr-citizen-demo')?.role).toBe('citizen');
-    expect(data.users.find((u) => u.id === 'usr-officer-caste')?.role).toBe('officer');
-    expect(data.users.find((u) => u.id === 'usr-admin-demo')?.role).toBe('admin');
-    expect(roles.filter((r) => r === 'officer').length).toBeGreaterThanOrEqual(8);
+  it('seeds only the documented prototype administrator as an active account', () => {
+    const admin = data.users.find((user) => user.id === DEFAULT_ADMIN_ID);
+    expect(admin).toMatchObject({
+      email: DEFAULT_ADMIN_EMAIL,
+      role: 'super_admin',
+      active: true,
+      accountStatus: 'approved',
+    });
+    expect(data.users.filter((user) => user.active)).toEqual([admin]);
+    expect(DEFAULT_ADMIN_PASSWORD).toBe('admin@123');
   });
 
-  it('never stores plaintext passwords', () => {
-    for (const u of data.users) expect(u.passwordDigest.startsWith('sha256:')).toBe(true);
+  it('keeps fictional sample profiles disabled and without credential material', () => {
+    for (const user of data.users.filter((candidate) => candidate.id !== DEFAULT_ADMIN_ID)) {
+      expect(user.active).toBe(false);
+      expect(user.passwordDigest).toBe('');
+    }
   });
 
   it('generates unique application IDs and at least 150 applications', () => {
@@ -57,17 +66,44 @@ describe('seed data', () => {
     expect(caste.departmentId).toBe('caste');
     expect(income.departmentId).toBe('income');
     expect(caste.status).toBe('in_review');
-    const officer = data.users.find((u) => u.id === 'usr-officer-caste')!;
+    const officer: OfficerUser = {
+      id: 'test-officer',
+      role: 'department_staff',
+      name: 'Test Officer',
+      email: 'officer@example.test',
+      mobile: '',
+      createdAt: new Date(NOW).toISOString(),
+      passwordDigest: '',
+      active: true,
+      lastLoginAt: null,
+      accountStatus: 'approved',
+      employeeId: 'CASTE-001',
+      departmentId: 'caste',
+      designation: 'Test Officer',
+    };
     expect(canViewApplication(officer, caste)).toBe(true);
     expect(canViewApplication(officer, income)).toBe(false);
   });
 
   it('scopes citizens to their own applications and denies admins document content', () => {
-    const citizen = data.users.find((u) => u.id === 'usr-citizen-demo')!;
-    const admin = data.users.find((u) => u.id === 'usr-admin-demo')!;
+    const citizen = data.users.find((u) => u.id === SAMPLE_CITIZEN_ID)!;
+    const admin: AdminUser = {
+      id: 'test-admin',
+      role: 'super_admin',
+      name: 'Test Admin',
+      email: 'admin@example.test',
+      mobile: '',
+      createdAt: new Date(NOW).toISOString(),
+      passwordDigest: '',
+      active: true,
+      lastLoginAt: null,
+      accountStatus: 'approved',
+      designation: 'Test Administrator',
+      systemAccess: [],
+    };
     const mine = data.applications.filter((a) => canViewApplication(citizen, a));
     expect(mine.every((a) => a.citizenId === citizen.id)).toBe(true);
-    expect(mine.length).toBeGreaterThanOrEqual(5);
+    expect(mine.length).toBeGreaterThan(0);
     const any = data.applications[0]!;
     expect(canViewDocumentContent(admin, any)).toBe(false);
   });
@@ -145,10 +181,12 @@ describe('validation helpers', () => {
     expect(isValidEmail('name@example.com')).toBe(true);
     expect(isValidEmail('name@example')).toBe(false);
     expect(validateName('M')).toBeTruthy();
+    expect(validateName('DK')).toBeUndefined();
     expect(validateName('Meera Krishnan')).toBeUndefined();
     expect(validateDob('2099-01-01', NOW)).toBeTruthy();
     expect(validateDob('1994-03-18', NOW)).toBeUndefined();
     expect(validatePassword('short')).toBeTruthy();
-    expect(validatePassword('Password1')).toBeUndefined();
+    expect(validatePassword('Password123!')).toBeUndefined();
+    expect(validatePassword('Password1')).toBeTruthy();
   });
 });

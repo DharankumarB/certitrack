@@ -1,20 +1,27 @@
-/** Prefix that marks a SHA-256 digest in stored user records. */
-export const DIGEST_PREFIX = 'sha256:';
+const ITERATIONS = 120_000;
 
-/**
- * Digests a password with SHA-256 via Web Crypto. Requires a secure context (HTTPS or localhost).
- * Passwords are never stored in plaintext. The prototype has no server, so this is a
- * demonstration of the pattern only; production must use a server-side, salted KDF.
- */
+/** Local-only PBKDF2 verifier. Browser-stored credentials are not suitable for production auth. */
 export async function digestPassword(password: string): Promise<string> {
   const subtle = globalThis.crypto?.subtle;
   if (!subtle) throw new Error('SECURE_CONTEXT_REQUIRED');
-  const buf = await subtle.digest('SHA-256', new TextEncoder().encode(password));
+  const salt = globalThis.crypto.getRandomValues(new Uint8Array(16));
+  const key = await subtle.importKey('raw', new TextEncoder().encode(password), 'PBKDF2', false, ['deriveBits']);
+  const buf = await subtle.deriveBits({ name: 'PBKDF2', hash: 'SHA-256', salt, iterations: ITERATIONS }, key, 256);
+  const saltHex = Array.from(salt, (b) => b.toString(16).padStart(2, '0')).join('');
   const hex = Array.from(new Uint8Array(buf), (b) => b.toString(16).padStart(2, '0')).join('');
-  return DIGEST_PREFIX + hex;
+  return `pbkdf2$${ITERATIONS}$${saltHex}$${hex}`;
 }
 
 export async function verifyPassword(password: string, digest: string): Promise<boolean> {
-  const candidate = await digestPassword(password);
-  return candidate === digest;
+  const [algorithm, iterationsText, saltHex, expected] = digest.split('$');
+  if (algorithm !== 'pbkdf2' || !iterationsText || !saltHex || !expected) return false;
+  const iterations = Number(iterationsText);
+  if (!Number.isSafeInteger(iterations) || iterations < 10_000 || iterations > 1_000_000 || !/^[\da-f]{32}$/i.test(saltHex) || !/^[\da-f]{64}$/i.test(expected)) return false;
+  const subtle = globalThis.crypto?.subtle;
+  if (!subtle) throw new Error('SECURE_CONTEXT_REQUIRED');
+  const salt = new Uint8Array(saltHex.match(/.{2}/g)!.map((byte) => Number.parseInt(byte, 16)));
+  const key = await subtle.importKey('raw', new TextEncoder().encode(password), 'PBKDF2', false, ['deriveBits']);
+  const bits = await subtle.deriveBits({ name: 'PBKDF2', hash: 'SHA-256', salt, iterations }, key, 256);
+  const candidate = Array.from(new Uint8Array(bits), (b) => b.toString(16).padStart(2, '0')).join('');
+  return candidate === expected;
 }

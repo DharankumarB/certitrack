@@ -1,12 +1,12 @@
 import type { AuditLog, User } from '../types';
-import { DEMO_ADMIN_ID, DEMO_CITIZEN_ID, DEMO_OFFICER_ID } from './mockUsers';
+import { SAMPLE_CITIZEN_ID, SAMPLE_CASTE_STAFF_ID } from './mockUsers';
 import { ago, makeAudit } from './factories';
 
 /** Curated audit trail that matches the curated application story. */
 export function curatedAuditLogs(now: number, users: User[]): AuditLog[] {
-  const officer = users.find((u) => u.id === DEMO_OFFICER_ID);
-  const citizen = users.find((u) => u.id === DEMO_CITIZEN_ID);
-  const admin = users.find((u) => u.id === DEMO_ADMIN_ID);
+  const officer = users.find((u) => u.id === SAMPLE_CASTE_STAFF_ID);
+  const citizen = users.find((u) => u.id === SAMPLE_CITIZEN_ID);
+  const admin = undefined;
   const geetha = users.find((u) => u.id === 'usr-officer-domicile-1');
   const sathish = users.find((u) => u.id === 'usr-officer-income-1');
   const log: AuditLog[] = [];
@@ -19,9 +19,6 @@ export function curatedAuditLogs(now: number, users: User[]): AuditLog[] {
   const c = who(citizen, 'Meera Krishnan');
   const a = who(admin, 'Arjun Mehta');
 
-  log.push(makeAudit(id(), at(0, 0, 40), a, 'login', { detail: 'Signed in with the demo account' }));
-  log.push(makeAudit(id(), at(0, 0, 25), c, 'login', { detail: 'Signed in with the demo account' }));
-  log.push(makeAudit(id(), at(0, 1), o, 'login', { detail: 'Signed in with the demo account', departmentId: 'caste' }));
   log.push(makeAudit(id(), at(0, 0, 40), o, 'access_denied', { result: 'denied', departmentId: 'caste', applicationId: 'APP-10421', detail: 'Attempted to open an Income Certificate file from the Caste queue. Blocked by department isolation.' }));
   log.push(makeAudit(id(), at(0, 2, 10), { id: null, name: 'Unknown account', role: 'public' }, 'login_failed', { result: 'failed', detail: 'Unknown account. Sign-in rejected.' }));
   log.push(makeAudit(id(), at(0, 0, 25), c, 'certificate_viewed', { applicationId: 'APP-10294', detail: 'Opened CTK-CST-2026-000309 in the Certificate Locker' }));

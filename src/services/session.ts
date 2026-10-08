@@ -16,8 +16,16 @@ export function readSession(): Session | null {
     try {
       const raw = store.getItem(KEY);
       if (raw) {
-        const parsed = JSON.parse(raw) as Session;
-        if (parsed && typeof parsed.userId === 'string' && typeof parsed.role === 'string') return parsed;
+        const parsed: unknown = JSON.parse(raw);
+        if (
+          parsed &&
+          typeof parsed === 'object' &&
+          typeof (parsed as Session).userId === 'string' &&
+          typeof (parsed as Session).role === 'string' &&
+          typeof (parsed as Session).remember === 'boolean' &&
+          typeof (parsed as Session).startedAt === 'string'
+        ) return parsed as Session;
+        store.removeItem(KEY);
       }
     } catch {
       // Ignore corrupted session data and fall through.

@@ -16,7 +16,7 @@ import { DISTRICTS, DISTRICT_TALUKS, GENDER_OPTIONS, LANGUAGE_OPTIONS } from '..
 import { ROLE_LABEL } from '../../config/navigation';
 import { mockDepartments } from '../../data/mockDepartments';
 import { useAppState } from '../../hooks/useAppState';
-import type { CitizenUser, OfficerUser, AdminUser, User } from '../../types';
+import type { CitizenUser, User } from '../../types';
 import { maskEmail, maskMobile } from '../../utils/format';
 
 type Errors = Partial<Record<keyof ProfilePatch | 'current' | 'next' | 'confirm', string>>;
@@ -136,7 +136,7 @@ function PasswordForm({ user }: { user: User }) {
   };
   return (
     <Card>
-      <CardHeader title="Password" description="Passwords are stored as SHA-256 digests in this prototype, never in plain text." />
+      <CardHeader title="Password" description="Passwords use salted PBKDF2 verifiers in this browser-only prototype; this does not provide production-grade authentication security." />
       <CardBody>
         <form onSubmit={submit} noValidate className="grid gap-5 sm:grid-cols-3 grid-cols-1">
           <TextField label="Current password" type="password" autoComplete="current-password" value={current} onChange={(e) => setCurrent(e.target.value)} error={errors.current} required />
@@ -183,7 +183,9 @@ function ChannelPrefs({ user }: { user: CitizenUser }) {
 }
 
 function AccountSummary({ user }: { user: User }) {
-  const dept = user.role === 'officer' ? mockDepartments.find((d) => d.id === (user as OfficerUser).departmentId) : null;
+  const staff = 'employeeId' in user ? user : null;
+  const admin = 'systemAccess' in user ? user : null;
+  const dept = staff ? mockDepartments.find((d) => d.id === staff.departmentId) : null;
   return (
     <Card>
       <CardBody className="space-y-5">
@@ -199,22 +201,22 @@ function AccountSummary({ user }: { user: User }) {
           items={[
             { label: 'Email', value: maskEmail(user.email) },
             { label: 'Mobile', value: maskMobile(user.mobile) },
-            ...(user.role === 'officer' ? [{ label: 'Employee ID', value: (user as OfficerUser).employeeId }, { label: 'Department', value: dept?.name ?? '—' }, { label: 'Designation', value: (user as OfficerUser).designation }] : []),
-            ...(user.role === 'admin' ? [{ label: 'Designation', value: (user as AdminUser).designation }] : []),
+            ...(staff ? [{ label: 'Employee ID', value: staff.employeeId }, { label: 'Department', value: dept?.name ?? '—' }, { label: 'Designation', value: staff.designation }] : []),
+            ...(admin ? [{ label: 'Designation', value: admin.designation }] : []),
           ]}
         />
-        {user.role === 'officer' && (
+        {staff && (
           <p className="flex items-start gap-2 text-xs text-slate-600">
             <Building2 className="mt-0.5 size-3.5 shrink-0" aria-hidden="true" /> You can open and decide on files from {dept?.name} only.
           </p>
         )}
-        {user.role === 'admin' && (
+        {admin && (
           <div>
             <p className="mb-2 flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-slate-500">
               <ShieldCheck className="size-3.5" aria-hidden="true" /> System access
             </p>
             <ul className="flex flex-wrap gap-1.5">
-              {(user as AdminUser).systemAccess.map((a) => (
+              {admin.systemAccess.map((a) => (
                 <li key={a} className="rounded-full bg-navy-50 px-2.5 py-1 text-xs font-medium text-navy-800">
                   {a}
                 </li>

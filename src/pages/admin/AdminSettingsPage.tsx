@@ -60,7 +60,7 @@ export default function AdminSettingsPage() {
       await clearBlobs();
       await resetDemoData(admin);
       setConfirmReset(false);
-      toast({ title: 'Demo data restored', description: 'Starting dataset reloaded.' });
+      toast({ title: 'Sample data restored', description: 'Fictional sample records were restored; local accounts were kept.' });
       navigate(ROLE_HOME.admin);
     } catch (err) {
       toast({ tone: 'danger', title: 'Reset failed', description: errorMessage(err) });
@@ -71,7 +71,7 @@ export default function AdminSettingsPage() {
 
   return (
     <div className="space-y-6">
-      <PageHeader title="Settings" description="Simulation speed, notification channels, integration status and demo controls." id="settings-title" actions={<IntegrationBadge kind="prototype" />} />
+      <PageHeader title="Settings" description="Simulation speed, notification channels, integration status and local development controls." id="settings-title" actions={<IntegrationBadge kind="prototype" />} />
       <div className="grid gap-6 xl:grid-cols-2 grid-cols-1">
         <Card>
           <CardHeader title="Simulation" description="How fast the simulated e-sign and courier progress." />
@@ -108,11 +108,11 @@ export default function AdminSettingsPage() {
       </Card>
 
       <Card className="border-red-200">
-        <CardHeader title="Demo data reset" description="Restores the starting dataset. This clears every change, including new applications, notifications and audit entries." />
+        <CardHeader title="Reset fictional sample data" description="Restores the fictional sample applications and documents. Locally registered citizen, staff, and administrator accounts are preserved." />
         <CardBody className="space-y-4">
-          <Alert tone="warning" title="This cannot be undone">Your account is kept, but accounts created during the demo will be removed.</Alert>
+          <Alert tone="warning" title="This cannot be undone">Application changes, sample notifications, audit history, and uploaded files are cleared. Local-development accounts are kept.</Alert>
           <Button variant="danger" icon={RotateCcw} onClick={() => setConfirmReset(true)}>
-            Reset demo data
+            Reset sample data
           </Button>
         </CardBody>
       </Card>
@@ -122,9 +122,9 @@ export default function AdminSettingsPage() {
         onClose={() => setConfirmReset(false)}
         onConfirm={reset}
         loading={resetting}
-        title="Reset all demo data?"
-        description="The starting dataset will be restored in this browser. Other open tabs will update automatically."
-        confirmLabel="Reset demo data"
+        title="Reset fictional sample data?"
+        description="The sample application data will be restored in this browser. Local accounts remain available and other tabs update automatically."
+        confirmLabel="Reset sample data"
         variant="danger"
       />
     </div>

@@ -5,12 +5,12 @@ import { Logo } from '../ui/Logo';
 import { GlobalSearch } from './GlobalSearch';
 import { NotificationBell } from './NotificationBell';
 import { ProfileMenu } from './ProfileMenu';
-import { ROLE_HOME } from '../../config/navigation';
+import { ROLE_HOME, workspaceBaseFor } from '../../config/navigation';
 import { Button } from '../ui/Button';
 import { Modal } from '../ui/Modal';
 
 export function Topbar({ user, collapsed, onToggleSidebar, onOpenMenu, portalLabel }: { user: User; collapsed: boolean; onToggleSidebar: () => void; onOpenMenu: () => void; portalLabel: string }) {
-  const basePath = `/${user.role}`;
+  const basePath = workspaceBaseFor(user);
   const [searchOpen, setSearchOpen] = useState(false);
   return (
     <header className="sticky top-0 z-20 border-b border-slate-200 bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/85">

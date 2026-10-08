@@ -1,7 +1,7 @@
 // Central domain types for CertiTrack. Every module imports from here so that
 // the data layer, store, services and UI share one vocabulary.
 
-export type UserRole = 'citizen' | 'officer' | 'admin';
+export type UserRole = 'citizen' | 'department_staff' | 'super_admin' | 'officer' | 'admin';
 
 /** A department maps 1:1 to a certificate type in the prototype (extensible). */
 export type DepartmentId = 'caste' | 'income' | 'domicile';
@@ -30,6 +30,7 @@ export type ApplicationStatus =
 
 export type Priority = 'high' | 'normal' | 'low';
 export type PriorityOverride = Priority | null;
+export type AccountStatus = 'approved' | 'pending_approval' | 'rejected' | 'suspended';
 
 export type DocumentStatus = 'verified' | 'needs_changes' | 'warning' | 'pending';
 export type OfficerDecision = 'accepted' | 'flagged' | null;
@@ -61,11 +62,22 @@ export interface OcrField {
   confidence: number;
 }
 
+export type VerificationRecommendation = 'PASS' | 'NEEDS MANUAL REVIEW' | 'UPLOAD REJECTED';
+export type FileValidity = 'valid' | 'invalid';
+export type MatchResult = 'MATCHED' | 'PARTIAL' | 'MISMATCH';
+export type ConsistencyResult = 'CONSISTENT' | 'REVIEW' | 'INCONSISTENT';
+
 export interface AIIssue {
   severity: 'warning' | 'critical';
   checkKey: CheckKey;
   message: string;
   recommendation: string;
+}
+
+export interface VerificationStage {
+  stage: string;
+  status: CheckStatus;
+  detail: string;
 }
 
 export interface AIValidationResult {
@@ -78,6 +90,19 @@ export interface AIValidationResult {
   verdict: DocumentStatus;
   detectedType: string;
   expectedType: string;
+  fileValidity?: FileValidity;
+  imageQualityScore?: number;
+  documentType?: string;
+  documentTypeConfidence?: number;
+  ocrConfidence?: number;
+  extractedFields?: OcrField[];
+  fieldMatchingResult?: MatchResult;
+  consistencyResult?: ConsistencyResult;
+  forensicIndicators?: string[];
+  overallAiVerificationConfidence?: number;
+  finalRecommendation?: VerificationRecommendation;
+  prototypeMode?: boolean;
+  pipeline?: VerificationStage[];
   ocr: OcrField[];
   checks: AICheck[];
   issues: AIIssue[];
@@ -256,10 +281,14 @@ interface UserBase {
   email: string;
   mobile: string;
   createdAt: string;
-  /** SHA-256 hex digest (or an fnv: prefixed digest in non-secure contexts). Never plaintext. */
+  /** Development-only password verifier. Never treat browser-stored credentials as production auth. */
   passwordDigest: string;
   active: boolean;
   lastLoginAt: string | null;
+  accountStatus?: AccountStatus;
+  approvalAt?: string | null;
+  approvedBy?: string | null;
+  rejectionReason?: string | null;
 }
 
 export interface CitizenUser extends UserBase {
@@ -275,14 +304,15 @@ export interface CitizenUser extends UserBase {
 }
 
 export interface OfficerUser extends UserBase {
-  role: 'officer';
+  role: 'department_staff' | 'officer';
   employeeId: string;
   departmentId: DepartmentId;
   designation: string;
+  staffReference?: string;
 }
 
 export interface AdminUser extends UserBase {
-  role: 'admin';
+  role: 'super_admin' | 'admin';
   designation: string;
   systemAccess: string[];
 }
